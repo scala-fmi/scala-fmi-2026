@@ -1,6 +1,6 @@
 package com.scalafmi
 
-def solveQuadraticEquation(a: Double, b: Double, c: Double): (Double, Double) =
+def solveQuadraticEquation(a: Double, b: Double, c: Double): (x: Double, y: Double) =
   def squared(n: Double) = n * n
 
   val discriminantSqrt =
@@ -10,15 +10,27 @@ def solveQuadraticEquation(a: Double, b: Double, c: Double): (Double, Double) =
   val firstSolution = (-b - discriminantSqrt) / (2 * a)
   val secondSolution = (-b + discriminantSqrt) / (2 * a)
 
-  (firstSolution, secondSolution) // Наредена двойка. Повече за тях по-късно в курса :)
+  (x = firstSolution, y = secondSolution) // Наредена двойка. Повече за тях по-късно в курса :)
 end solveQuadraticEquation
+
+val person: (name: String, age: Int, address: String) = ("Ivan", 27, "Sofia")
+
+type Person = (name: String, age: Int, address: String)
+
+def greeting(person: Person): String =
+  s"Hello, I am ${person.name} from ${person.address}. I am ${person.age} years old"
 
 @main
 def testQuadratic() =
   val result = solveQuadraticEquation(-10, -2, 4) match
     case (x, y) => s"firstResult: $x, secondResult: $y"
 
-  val result2 =
+  val ff = (x: 2, y: 4)
+
+  val result2 = solveQuadraticEquation(-10, -2, 4)
+  println(result2.x)
+
+  val result3 =
     val (x, y) = solveQuadraticEquation(-10, -2, 4)
     s"firstResult: $x, secondResult: $y"
 

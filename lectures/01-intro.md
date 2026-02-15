@@ -4,7 +4,7 @@ title: За курса
 
 # Функционално програмиране за напреднали със Scala
 
-2023/2024
+2025/2026
 
 ![](images/scala-logo.png)
 
@@ -19,7 +19,7 @@ title: За курса
 * Кои сме ние?
 * Административни неща за курса
 * Накратко защо въобще функционално?
-* Има ли причина да уча Скала 2024-а година, човек?
+* Защо Скала през 2026-а?
 * Kакво ще учим?
 * Ресурси
 * Малко примерен код
@@ -30,26 +30,43 @@ title: За курса
 
 <ul style="display: grid; grid-template-columns: repeat(2, 1fr); list-style: none">
 <li>[![](images/01-intro/zdravko.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Здравко Стойчев](https://www.linkedin.com/in/zdravko-stoychev-46414758/)</li>
+<li>[![](images/01-intro/petar.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Петър Колев](https://www.linkedin.com/in/peter-k-8194ba142/)</li>
+<li>[![](images/01-intro/kamen.png){ height=100 style="vertical-align: middle; border-radius: 50%" } Камен Вакъвчиев](https://www.linkedin.com/in/kamen-vakavchiev-061781213/)</li>
+<li>[![](images/01-intro/stoyan.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Стоян Михайлов](https://www.linkedin.com/in/stoyan-mihaylov-1aa6b4183/)</li>
+<li>[![](images/01-intro/todor.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Тодор Гюзелев](https://www.linkedin.com/in/todor-gyuzelev/)</li>
+</ul>
+
+# Пенсионери
+
+(активни преподаватели от миналите издания на курса)
+
+<ul style="display: grid; grid-template-columns: repeat(2, 1fr); list-style: none">
 <li>[![](images/01-intro/boyan.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Боян Бонев](https://www.linkedin.com/in/boyan-bonev-ams/)</li>
 <li>[![](images/01-intro/vassil.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Васил Дичев](https://www.linkedin.com/in/vdichev/)</li>
 <li>[![](images/01-intro/viktor.jpg){ height=100 style="vertical-align: middle; border-radius: 50%" } Виктор Маринов](https://www.linkedin.com/in/viktor-marinov-07374512b/)</li>
 </ul>
 
-...може би и други!
+::: { .fragment }
+
+възможно е все пак да се включат
+
+:::
 
 # Сбирки и админастративни неща
 
 ::: incremental
 
-* Понеделник и сряда от 18:15 до 20:00
-  * в зали 02 и 01 съответно
-  * От тази година 4 часа лекции
+* Понеделник и четвъртък от 18:15 до 20:00
+  * в зала 02
+  * 4 часа лекции/седмица
   * 1 час семинари?
+    * по нужда за решаване на домашните
+    * първите 4 седмици – веднъж седмично до 21:00, за да минем по-бързо през началния материал?
 * Изцяло на място
   * Но ще опитаме да правим записи
   * За да се получи курсът е нужно и вашето участие
 * Slack – най-лесно може да ни намерите там <- новини и комуникация.
-* Материали в GitHub: [https://github.com/scala-fmi/scala-fmi-2024](https://github.com/scala-fmi/scala-fmi-2024)
+* Материали в GitHub: [https://github.com/scala-fmi/scala-fmi-2026](https://github.com/scala-fmi/scala-fmi-2026)
 * Домашни и финален проект – GitHub Classroom
 
 :::
@@ -58,7 +75,7 @@ title: За курса
 
 ::: { .fragment }
 
-* Домашни през семестъра (около 5): 50 точки
+* 4–5 домашни през семестъра: 50 точки (никога не са 5 :D)
 * Финален проект: 50 точки
 * Бонус точки
 * Общо: 100+
@@ -88,6 +105,8 @@ title: За курса
 
 # Функционално? Кратка история
 
+::: { .fragment }
+
 * 1930–1940 – Ламбда смятане от Алонсо Чърч
   - модел на изчисление, базиран на композиция на анонимни функции
 * 1958 – LISP от Джон МакКартни – първи език за ФП
@@ -101,6 +120,8 @@ title: За курса
   - Параметричен полиморфизъм (Generics)
   - Pattern matching
 * 1980-те – допълнително развитие, Standard ML, Miranda (lazy evaluation)
+
+:::
 
 # Функционално? Кратка история
 
@@ -212,7 +233,6 @@ title: За курса
 * Курсът ни ще се базира на Scala 3
 
   ![](images/01-intro/cheering-minions.gif)
-* Този път очакваме IntelliJ да работи добре :D
 * Ще ви срещнем и с мъничко Scala 2 синтаксис
   - много код все още използва него (Бележка Боян: Но не ви трябва да го четете....)
 
@@ -230,13 +250,23 @@ title: За курса
 
 # Scala екосистеми и проекти
 
-* [Lightbend](https://www.lightbend.com/) – Akka, Play Framework, Kalix, Slick
 * [Typelevel](https://typelevel.org/) – Cats, Cats Effect, Http4s, fs2, doobie и много други
+  * Това ще изучаваме
 * [ZIO](https://zio.dev/)
+* [Lightbend](https://www.lightbend.com/) – Akka, Play Framework, Kalix, Slick
+  * Вече поостаряло
 * Apache 
   - [Spark](https://spark.apache.org/) – large-scale data processing (incl. ML)
   - [Flink](https://flink.apache.org/) – distributed event stream processing
   - [Kafka](https://kafka.apache.org/) – distributed event streaming
+
+# Композиране на библиотеки пред единен фреймуърк
+
+::: { .fragment }
+
+pros and cons?
+
+:::
 
 # Иновативно и достъпно комюнити<br />(и ФП и Scala)
 
@@ -252,10 +282,12 @@ title: За курса
   * типовете ни водят напред
     * щом се компилира обикновено работи :D
 * ADTs и как да си дизайнем домейна изчерпателно
+  * практичен дизайн на типове, вече приложим и в други езици
   * “make illegal state unrepresentable”
 * Как да кодим и unhappy пътя
   * без да хвърляме изключения
   * изразявайки го чрез стойности, които можем да трансформираме
+  * контрол над страничните ефекти!
 
 :::
 
@@ -282,13 +314,13 @@ title: За курса
 
 ::: incremental
 
-* Композитността ще е повтаряема тема
+* Композитност
 * От как да пишем малки функции до как да изградим цялостно Scala приложение
   * програмите като стойности
   * домейн дизайн
   * dependency injection, верифициран по време на компилация
   * гарантирано безопасно управление на ресурси 
-* Уеб приложения
+* Уеб приложения и услуги
   * които си комуникират
   * HTTP, връзка с релационни бази, JSON сериализация, поточна обработка
   * описване на endpoint-и като данни ![](images/01-intro/tapir.png){ height=40 style="vertical-align:middle; margin: 0" }
@@ -318,6 +350,7 @@ title: За курса
 
 * Scala.js, нито Scala Native
   * [Fullstack Scala 3 with Typelevel Stack](https://www.youtube.com/watch?v=j6eFW4VmbRU)
+  * Но може да го разгледаме
 * Тестване
   * ще разгледаме основите и ще ви насочваме през домашните
   * но няма да успеем на наблегнем на тях и ще разчитаме и на вас
