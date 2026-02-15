@@ -108,7 +108,7 @@
 <section id="функционално-програмиране-за-напреднали-със-scala"
 class="slide level1">
 <h1>Функционално програмиране за напреднали със Scala</h1>
-<p>2023/2024</p>
+<p>2025/2026</p>
 <p><img data-src="images/scala-logo.png" /></p>
 </section>
 <section id="днес" class="slide level1">
@@ -120,8 +120,7 @@ height="180" /></p>
 <li class="fragment">Кои сме ние?</li>
 <li class="fragment">Административни неща за курса</li>
 <li class="fragment">Накратко защо въобще функционално?</li>
-<li class="fragment">Има ли причина да уча Скала 2024-а година,
-човек?</li>
+<li class="fragment">Защо Скала през 2026-а?</li>
 <li class="fragment">Kакво ще учим?</li>
 <li class="fragment">Ресурси</li>
 <li class="fragment">Малко примерен код</li>
@@ -136,6 +135,36 @@ data-src="images/01-intro/zdravko.jpg"
 style="vertical-align: middle; border-radius: 50%" height="100" />
 Здравко Стойчев</a>
 </li>
+<li>
+<a href="https://www.linkedin.com/in/peter-k-8194ba142/"><img
+data-src="images/01-intro/petar.jpg"
+style="vertical-align: middle; border-radius: 50%" height="100" /> Петър
+Колев</a><br />(Петьо или Пешо?)
+</li>
+<li>
+<a href="https://www.linkedin.com/in/kamen-vakavchiev-061781213/"><img
+data-src="images/01-intro/kamen.jpg"
+style="vertical-align: middle; border-radius: 50%" height="100" /> Камен
+Вакъвчиев</a>
+</li>
+<li>
+<a href="https://www.linkedin.com/in/stoyan-mihaylov-1aa6b4183/"><img
+data-src="images/01-intro/stoyan.jpg"
+style="vertical-align: middle; border-radius: 50%" height="100" /> Стоян
+Михайлов</a>
+</li>
+<li>
+<a href="https://www.linkedin.com/in/todor-gyuzelev/"><img
+data-src="images/01-intro/todor.jpg"
+style="vertical-align: middle; border-radius: 50%" height="100" /> Тодор
+Гюзелев</a>
+</li>
+</ul>
+</section>
+<section id="пенсионери" class="slide level1">
+<h1>Пенсионери</h1>
+<p>(активни преподаватели от миналите издания на курса)</p>
+<ul style="display: grid; grid-template-columns: repeat(2, 1fr); list-style: none">
 <li>
 <a href="https://www.linkedin.com/in/boyan-bonev-ams/"><img
 data-src="images/01-intro/boyan.jpg"
@@ -155,16 +184,23 @@ style="vertical-align: middle; border-radius: 50%" height="100" />
 Виктор Маринов</a>
 </li>
 </ul>
-<p>…може би и други!</p>
+<div class="fragment">
+<p>възможно е все пак да се включат</p>
+</div>
 </section>
 <section id="сбирки-и-админастративни-неща" class="slide level1">
 <h1>Сбирки и админастративни неща</h1>
 <ul>
-<li class="fragment">Понеделник и сряда от 18:15 до 20:00
+<li class="fragment">Понеделник и четвъртък от 18:15 до 20:00
 <ul>
-<li class="fragment">в зали 02 и 01 съответно</li>
-<li class="fragment">От тази година 4 часа лекции</li>
-<li class="fragment">1 час семинари?</li>
+<li class="fragment">в зала 02</li>
+<li class="fragment">4 часа лекции/седмица</li>
+<li class="fragment">1 час семинари?
+<ul>
+<li class="fragment">по нужда за решаване на домашните</li>
+<li class="fragment">първите 4 седмици – веднъж седмично до 21:00, за да
+минем по-бързо през началния материал?</li>
+</ul></li>
 </ul></li>
 <li class="fragment">Изцяло на място
 <ul>
@@ -175,7 +211,7 @@ style="vertical-align: middle; border-radius: 50%" height="100" />
 <li class="fragment">Slack – най-лесно може да ни намерите там &lt;-
 новини и комуникация.</li>
 <li class="fragment">Материали в GitHub: <a
-href="https://github.com/scala-fmi/scala-fmi-2024">https://github.com/scala-fmi/scala-fmi-2024</a></li>
+href="https://github.com/scala-fmi/scala-fmi-2026">https://github.com/scala-fmi/scala-fmi-2026</a></li>
 <li class="fragment">Домашни и финален проект – GitHub Classroom</li>
 </ul>
 </section>
@@ -183,7 +219,7 @@ href="https://github.com/scala-fmi/scala-fmi-2024">https://github.com/scala-fmi/
 <h1>Оценяване?</h1>
 <div class="fragment">
 <ul>
-<li>Домашни през семестъра (около 5): 50 точки</li>
+<li>4–5 домашни през семестъра: 50 точки (никога не са 5 :D)</li>
 <li>Финален проект: 50 точки</li>
 <li>Бонус точки</li>
 <li>Общо: 100+</li>
@@ -228,6 +264,7 @@ href="https://github.com/scala-fmi/scala-fmi-2024">https://github.com/scala-fmi/
 </section>
 <section id="функционално-кратка-история" class="slide level1">
 <h1>Функционално? Кратка история</h1>
+<div class="fragment">
 <ul>
 <li>1930–1940 – Ламбда смятане от Алонсо Чърч
 <ul>
@@ -250,6 +287,7 @@ href="https://github.com/scala-fmi/scala-fmi-2024">https://github.com/scala-fmi/
 <li>1980-те – допълнително развитие, Standard ML, Miranda (lazy
 evaluation)</li>
 </ul>
+</div>
 </section>
 <section id="функционално-кратка-история-1" class="slide level1">
 <h1>Функционално? Кратка история</h1>
@@ -396,8 +434,6 @@ href="https://docs.scala-lang.org/scala3/new-in-scala3.html">списък на
 <ul>
 <li class="fragment"><p>Курсът ни ще се базира на Scala 3</p>
 <p><img data-src="images/01-intro/cheering-minions.gif" /></p></li>
-<li class="fragment"><p>Този път очакваме IntelliJ да работи добре
-:D</p></li>
 <li class="fragment"><p>Ще ви срещнем и с мъничко Scala 2 синтаксис</p>
 <ul>
 <li class="fragment">много код все още използва него (Бележка Боян: Но
@@ -418,11 +454,17 @@ Disney+, Stripe, Airtable, Databricks, Ocado!</li>
 <section id="scala-екосистеми-и-проекти" class="slide level1">
 <h1>Scala екосистеми и проекти</h1>
 <ul>
-<li><a href="https://www.lightbend.com/">Lightbend</a> – Akka, Play
-Framework, Kalix, Slick</li>
 <li><a href="https://typelevel.org/">Typelevel</a> – Cats, Cats Effect,
-Http4s, fs2, doobie и много други</li>
+Http4s, fs2, doobie и много други
+<ul>
+<li>Това ще изучаваме</li>
+</ul></li>
 <li><a href="https://zio.dev/">ZIO</a></li>
+<li><a href="https://www.lightbend.com/">Lightbend</a> – Akka, Play
+Framework, Kalix, Slick
+<ul>
+<li>Вече поостаряло</li>
+</ul></li>
 <li>Apache
 <ul>
 <li><a href="https://spark.apache.org/">Spark</a> – large-scale data
@@ -433,6 +475,13 @@ stream processing</li>
 streaming</li>
 </ul></li>
 </ul>
+</section>
+<section id="композиране-на-библиотеки-пред-единен-фреймуърк"
+class="slide level1">
+<h1>Композиране на библиотеки пред единен фреймуърк</h1>
+<div class="fragment">
+<p>pros and cons?</p>
+</div>
 </section>
 <section id="иновативно-и-достъпно-комюнити-и-фп-и-scala"
 class="slide level1">
@@ -453,6 +502,8 @@ class="slide level1">
 </ul></li>
 <li class="fragment">ADTs и как да си дизайнем домейна изчерпателно
 <ul>
+<li class="fragment">пракичен дизайн на типове, вече приложим и в други
+езици</li>
 <li class="fragment">“make illegal state unrepresentable”</li>
 </ul></li>
 <li class="fragment">Как да кодим и unhappy пътя
@@ -460,6 +511,7 @@ class="slide level1">
 <li class="fragment">без да хвърляме изключения</li>
 <li class="fragment">изразявайки го чрез стойности, които можем да
 трансформираме</li>
+<li class="fragment">контрол над страничните ефекти!</li>
 </ul></li>
 </ul>
 </section>
@@ -492,7 +544,7 @@ class="slide level1">
 <section id="какво-ще-учим-част-3" class="slide level1">
 <h1>Какво ще учим 😊?<br />(част 3)</h1>
 <ul>
-<li class="fragment">Композитността ще е повтаряема тема</li>
+<li class="fragment">Композитност</li>
 <li class="fragment">От как да пишем малки функции до как да изградим
 цялостно Scala приложение
 <ul>
@@ -502,7 +554,7 @@ class="slide level1">
 компилация</li>
 <li class="fragment">гарантирано безопасно управление на ресурси</li>
 </ul></li>
-<li class="fragment">Уеб приложения
+<li class="fragment">Уеб приложения и услуги
 <ul>
 <li class="fragment">които си комуникират</li>
 <li class="fragment">HTTP, връзка с релационни бази, JSON сериализация,
@@ -543,6 +595,7 @@ style="vertical-align:middle; margin: 0" height="40" /></li>
 <ul>
 <li><a href="https://www.youtube.com/watch?v=j6eFW4VmbRU">Fullstack
 Scala 3 with Typelevel Stack</a></li>
+<li>Но може да го разгледаме</li>
 </ul></li>
 <li>Тестване
 <ul>
