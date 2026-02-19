@@ -13,6 +13,9 @@
     .reveal .sourceCode {  /* see #7635 */
       overflow: visible;
     }
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -135,8 +138,7 @@ href="https://get-coursier.io/docs/cli-installation">Coursier</a></li>
 <h1>IDE или текстов редактор</h1>
 <p>Използвайте вашето любимо IDE или редактор:</p>
 <ul>
-<li><a href="https://www.jetbrains.com/idea/download/">IntelliJ
-Community Edition</a>
+<li><a href="https://www.jetbrains.com/idea/download/">IntelliJ</a>
 <ul>
 <li>инсталирайте Scala plugin-а към него</li>
 </ul></li>
@@ -836,36 +838,6 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb55-
 <span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">42</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">then</span> <span class="st">&quot;String&quot;</span> <span class="cf">else</span> <span class="fu">println</span><span class="op">(</span><span class="st">&quot;String&quot;</span><span class="op">)</span> <span class="co">// Any</span></span>
 <span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="dv">42</span> <span class="op">&gt;</span> <span class="dv">0</span> <span class="cf">then</span> <span class="dv">0</span> <span class="co">// AnyVal; else частта се счита за Unit</span></span></code></pre></div>
 </div>
-</section>
-<section id="досега" class="slide level1">
-<h1>Досега</h1>
-<ul>
-<li>Scala</li>
-<li>Scala toolset</li>
-<li>Типове и литерали. Низови литерали</li>
-<li>Дефиниции – <code>val</code>, <code>var</code>, <code>def</code>,
-<code>type</code>. Функции</li>
-<li>Type inference</li>
-<li>Файлове и пакети</li>
-<li>Всяка стойност е обект. Инфиксно извикване на методи</li>
-<li>Всичко е израз (със стойност и тип) или дефиниция</li>
-<li><code>if</code> конструкция, блокове (и те са изрази 😊)</li>
-<li>Типова йеархия</li>
-<li>Any, AnyVal, AnyRef, Unit, Nothing, Null</li>
-<li>Memory model на JVM</li>
-</ul>
-</section>
-<section id="днес" class="slide level1">
-<h1>Днес</h1>
-<ul>
-<li>Pattern matching</li>
-<li>Малко конструкции със странични ефекти</li>
-<li>Съставни типове и колекции</li>
-<li>Функционални конструкции</li>
-<li>Няколко задачки</li>
-<li>Други благинки при дефиниране на функции</li>
-<li>(днес или сряда) Какво всъщност е ФП</li>
-</ul>
 </section>
 <section id="pattern-matching" class="slide level1">
 <h1>Pattern <strong>Matching</strong></h1>
