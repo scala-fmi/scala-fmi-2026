@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>03-oop-in-a-functional-language</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="reveal-js/dist/reset.css">
+  <link rel="stylesheet" href="reveal-js/dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="reveal-js/dist/theme/white.css" id="theme">
+  <link rel="stylesheet" href="theme/theme.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section id="import-клаузи" class="slide level1">
+<h1>import клаузи</h1>
+<div class="fragment">
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>util<span class="op">.</span>Try <span class="co">// само типа Try</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">Try</span><span class="op">(</span><span class="dv">10</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>util<span class="op">.*</span> <span class="co">// всичко от util пакета</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">// import scala.util._ Scala2 синтаксис. Все още работи в Scala3</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Try</span><span class="op">(</span><span class="dv">10</span><span class="op">)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Success</span><span class="op">(</span><span class="dv">10</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> math<span class="op">.</span><span class="ex">Math</span><span class="op">.{</span> gcd<span class="op">,</span> Pi <span class="op">}</span> <span class="co">// няколко неща от обекта Math</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gcd</span><span class="op">(</span><span class="dv">42</span><span class="op">,</span> <span class="dv">18</span><span class="op">)</span> <span class="op">*</span> Pi</span></code></pre></div>
+</div>
+</section>
+<section id="import-клаузи-1" class="slide level1">
+<h1>import клаузи</h1>
+<div class="fragment">
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> math<span class="op">.</span><span class="ex">Math</span><span class="op">.*</span> <span class="co">// всичко от oбекта Math</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">squared</span><span class="op">(</span><span class="dv">11</span><span class="op">)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">gcd</span><span class="op">(</span><span class="dv">42</span><span class="op">,</span> <span class="dv">10</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>collection<span class="op">.</span>immutable<span class="op">.</span><span class="ex">Set</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>collection<span class="op">.</span>mutable<span class="op">.{</span> <span class="ex">Set</span> as MutableSet <span class="op">}</span> <span class="co">// преименуване</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">// import scala.collection.mutable.{ Set =&gt; MutableSet } // Scala2</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">Set</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">MutableSet</span><span class="op">(</span><span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">6</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode conf"><code class="sourceCode toml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="dt">rewrite.scala3.convertToNewSyntax</span> <span class="op">=</span> <span class="cn">true</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>collection<span class="op">.</span>immutable<span class="op">.</span><span class="ex">Set</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>collection<span class="op">.</span>mutable <span class="co">// импорт на част от пътя</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Set</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>mutable<span class="op">.</span><span class="ex">Set</span><span class="op">(</span><span class="dv">4</span><span class="op">,</span> <span class="dv">5</span><span class="op">,</span> <span class="dv">6</span><span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="import-клаузи-2" class="slide level1">
+<h1>import клаузи</h1>
+<ul>
+<li class="fragment"><p>Могат да са във всеки scope, не е нужно да са в
+началото на файла:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">Rational</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> d<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">import</span> <span class="ex">Math</span><span class="op">.</span>gcd</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gcd</span><span class="op">(</span>n<span class="op">.</span>abs<span class="op">,</span> d<span class="op">.</span>abs<span class="op">)</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="co">// ...</span></span></code></pre></div></li>
+<li class="fragment"><p>Автоматично във всеки файл се включват следните
+import-и:</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> java<span class="op">.</span>lang<span class="op">.*</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.*</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span><span class="bu">Predef</span><span class="op">.*</span></span></code></pre></div></li>
+</ul>
+</section>
+<section id="export-клаузи" class="slide level1 scala3">
+<h1 class="scala3">export клаузи</h1>
+<p>Позволяват делегация:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">object</span> IntUtils<span class="op">:</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">twice</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> n</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">squared</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="kw">object</span> DoubleUtils<span class="op">:</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">twice</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> n</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">squared</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">object</span> MathUtils<span class="op">:</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">export</span> IntUtils<span class="op">.*</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">export</span> DoubleUtils<span class="op">.*</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>MathUtils<span class="op">.</span><span class="fu">twice</span><span class="op">(</span><span class="dv">2</span><span class="op">)</span> <span class="co">// 4</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>MathUtils<span class="op">.</span><span class="fu">twice</span><span class="op">(</span><span class="fl">2.0</span><span class="op">)</span> <span class="co">// 4.0</span></span></code></pre></div>
+<ul>
+<li class="fragment">export-натите имена стават членове на обекта</li>
+<li class="fragment">синтактично е със същия формат като
+<code>import</code></li>
+</ul>
+</section>
+<section id="export-клаузи-1" class="slide level1 scala3">
+<h1 class="scala3">export клаузи</h1>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="ex">Scanner</span><span class="op">:</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">scan</span><span class="op">(</span>image<span class="op">:</span> <span class="ex">Image</span><span class="op">):</span> Page <span class="op">=</span> <span class="op">???</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> isOn<span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> <span class="op">???</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Printer<span class="op">:</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">print</span><span class="op">(</span>page<span class="op">:</span> Page<span class="op">):</span> <span class="ex">Image</span> <span class="op">=</span> <span class="op">???</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> isOn<span class="op">:</span> <span class="dt">Boolean</span> <span class="op">=</span> <span class="op">???</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Copier<span class="op">:</span></span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="kw">val</span> scanner <span class="op">=</span> <span class="kw">new</span> <span class="ex">Scanner</span></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">private</span> <span class="kw">val</span> printer <span class="op">=</span> <span class="kw">new</span> Printer</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">export</span> scanner<span class="op">.</span>scan</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="kw">export</span> printer<span class="op">.</span>print</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> isOn <span class="op">=</span> scanner<span class="op">.</span>isOn <span class="op">&amp;&amp;</span> printer<span class="op">.</span>isOn</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> copier <span class="op">=</span> <span class="kw">new</span> Copier</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> image <span class="op">=</span> <span class="op">???</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> copiedImage <span class="op">=</span> copier<span class="op">.</span><span class="fu">print</span><span class="op">(</span>copier<span class="op">.</span><span class="fu">scan</span><span class="op">(</span>image<span class="op">))</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>image <span class="op">==</span> copiedImage <span class="co">// true, hopefully :D</span></span></code></pre></div>
+</section>
+<section id="value-класове" class="slide level1">
+<h1>Value класове</h1>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">createAddressRegistration</span><span class="op">(</span>personId<span class="op">:</span> <span class="ex">String</span><span class="op">,</span> locationId<span class="op">:</span> <span class="ex">String</span><span class="op">)</span> <span class="op">=</span> <span class="op">???</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">createAddressRegistration</span><span class="op">(</span>locationId<span class="op">,</span> personId<span class="op">)</span> <span class="co">// compiles 😬</span></span></code></pre></div>
+</section>
+<section id="anyval-класове" class="slide level1">
+<h1>AnyVal класове</h1>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">final</span> <span class="cf">case</span> <span class="kw">class</span> <span class="fu">PersonId</span><span class="op">(</span>value<span class="op">:</span> <span class="ex">String</span><span class="op">)</span> <span class="kw">extends</span> AnyVal</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">final</span> <span class="cf">case</span> <span class="kw">class</span> <span class="fu">LocationId</span><span class="op">(</span>value<span class="op">:</span> <span class="ex">String</span><span class="op">)</span> <span class="kw">extends</span> AnyVal</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">createAddressRegistration</span><span class="op">(</span>person<span class="op">:</span> PersonId<span class="op">,</span> location<span class="op">:</span> LocationId<span class="op">)</span> <span class="op">=</span> <span class="op">???</span></span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">createAddressRegistration</span><span class="op">(</span><span class="fu">PersonId</span><span class="op">(</span><span class="st">&quot;100&quot;</span><span class="op">),</span> <span class="fu">LocationId</span><span class="op">(</span><span class="st">&quot;5&quot;</span><span class="op">))</span> <span class="co">// OK</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">createAddressRegistration</span><span class="op">(</span><span class="fu">LocationId</span><span class="op">(</span><span class="st">&quot;5&quot;</span><span class="op">),</span> <span class="fu">PersonId</span><span class="op">(</span><span class="st">&quot;100&quot;</span><span class="op">))</span> <span class="co">// won&#39;t compile</span></span></code></pre></div>
+</section>
+<section id="anyval-класове-1" class="slide level1">
+<h1>AnyVal класове</h1>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Meter</span><span class="op">(</span>amount<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> AnyVal<span class="op">:</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">+(</span>m<span class="op">:</span> Meter<span class="op">):</span> Meter <span class="op">=</span> <span class="fu">Meter</span><span class="op">(</span>amount <span class="op">+</span> m<span class="op">.</span>amount<span class="op">)</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">*(</span>coefficient<span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> Meter <span class="op">=</span> <span class="fu">Meter</span><span class="op">(</span>coefficient <span class="op">*</span> amount<span class="op">)</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">override</span> <span class="kw">def</span> toString <span class="op">=</span> <span class="ss">s&quot;$amount</span><span class="st"> meters</span><span class="ss">&quot;</span></span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>radius<span class="op">:</span> Meter<span class="op">):</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> circumference<span class="op">:</span> Meter <span class="op">=</span> radius <span class="op">*</span> <span class="dv">2</span> <span class="op">*</span> math<span class="op">.</span>Pi</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="fu">Circle</span><span class="op">(</span><span class="fu">Meter</span><span class="op">(</span><span class="dv">2</span><span class="op">)).</span>circumference<span class="op">.</span>toString <span class="co">// 12.566370614359172 meters</span></span></code></pre></div>
+</div>
+<ul>
+<li class="fragment">В повечето случаи не създават допълнителен обект,
+вместо това се репрезентират от типа, който обвиват</li>
+<li class="fragment">носят повече type safety в някои ситуации</li>
+<li class="fragment">обвитата стойност задължително трябва да е
+<code>val</code> в обиващия клас</li>
+<li class="fragment">поради JVM ограничения не могат да обвият повече от
+едно поле</li>
+</ul>
+</section>
+<section id="opaque-types" class="slide level1 scala3">
+<h1 class="scala3">Opaque Types</h1>
+<ul>
+<li>Same safety goal, fewer JVM compromises, guaranteed allocation-free,
+and the abstraction boundary is stronger.</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">object</span> domain<span class="op">:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  opaque <span class="kw">type</span> PersonId <span class="op">=</span> <span class="ex">String</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">object</span> PersonId<span class="op">:</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">apply</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> PersonId <span class="op">=</span> s</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extension</span> <span class="op">(</span>id<span class="op">:</span> PersonId<span class="op">)</span> <span class="kw">def</span> value<span class="op">:</span> <span class="ex">String</span> <span class="op">=</span> id</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  opaque <span class="kw">type</span> LocationId <span class="op">=</span> <span class="ex">String</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">object</span> LocationId<span class="op">:</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">apply</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> LocationId <span class="op">=</span> s</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extension</span> <span class="op">(</span>id<span class="op">:</span> LocationId<span class="op">)</span> <span class="kw">def</span> value<span class="op">:</span> <span class="ex">String</span> <span class="op">=</span> id</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">createAddressRegistration</span><span class="op">(</span><span class="fu">PersonId</span><span class="op">(</span><span class="st">&quot;100&quot;</span><span class="op">),</span> <span class="fu">LocationId</span><span class="op">(</span><span class="st">&quot;5&quot;</span><span class="op">))</span> <span class="co">// OK</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">createAddressRegistration</span><span class="op">(</span><span class="fu">LocationId</span><span class="op">(</span><span class="st">&quot;5&quot;</span><span class="op">),</span> <span class="fu">PersonId</span><span class="op">(</span><span class="st">&quot;100&quot;</span><span class="op">))</span> <span class="co">// won&#39;t compile</span></span></code></pre></div>
+<ul>
+<li class="fragment">Under the hood it’s still a String at runtime (so
+it’s “zero allocation” in the way you actually care about).</li>
+<li class="fragment">Outside the defining scope, PersonId is not treated
+as a String. You only expose what you choose (via extensions /
+methods).</li>
+<li class="fragment">No “single-val constructor” limitation because it’s
+not a class.</li>
+</ul>
+</section>
+<section id="изброени-типове" class="slide level1 scala3">
+<h1 class="scala3">Изброени типове</h1>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>enum WeekDay<span class="op">:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Monday<span class="op">,</span> Tuesday<span class="op">,</span> Wednesday<span class="op">,</span> Thursday<span class="op">,</span> Friday<span class="op">,</span> Saturday<span class="op">,</span> Sunday</span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">isWorkingDay</span><span class="op">(</span>day<span class="op">:</span> WeekDay<span class="op">)</span> <span class="op">=</span> day <span class="op">!=</span> WeekDay<span class="op">.</span>Saturday <span class="op">&amp;&amp;</span> day <span class="op">!=</span> WeekDay<span class="op">.</span>Sunday</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">isWorkingDay</span><span class="op">(</span>WeekDay<span class="op">.</span>Wednesday<span class="op">)</span> <span class="co">// true, :(</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>WeekDay<span class="op">.</span><span class="fu">valueOf</span><span class="op">(</span><span class="st">&quot;Monday&quot;</span><span class="op">)</span> <span class="co">// WeekDay.Monday</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>WeekDay<span class="op">.</span>values <span class="co">// Array(Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)</span></span></code></pre></div>
+</div>
+</section>
+<section id="типизиране-съвместимост-на-типове" class="slide level1">
+<h1>Типизиране – съвместимост на типове</h1>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> a<span class="op">:</span> A <span class="op">=</span> <span class="kw">new</span> B</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co">// кога тип B е съвместим с тип A?</span></span></code></pre></div>
+<ul>
+<li class="fragment">Номинално – типове се проверяват за съвместимост по
+тяхното име (и по явна релация с други имена)
+<ul>
+<li class="fragment">Аз съм бухал, защото са ми казали, че съм
+бухал</li>
+<li class="fragment">Аз като бухал съм птица, защото всички бухали са
+птици</li>
+<li class="fragment">“B наследява A”</li>
+</ul></li>
+<li class="fragment">Структурно – съвместимост на типове се определя по
+структурата на обекта (по неговото поведение)
+<ul>
+<li class="fragment">Аз съм бухал, защото гукам като бухал и защото мога
+да летя</li>
+<li class="fragment">Аз като бухал съм птица, защото мога да летя</li>
+<li class="fragment">“B има същите методи (т.е. същата структура) като
+A”</li>
+</ul></li>
+</ul>
+</section>
+<section id="структурно-типизиране-в-scala" class="slide level1">
+<h1>Структурно типизиране в Scala</h1>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Eagle</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">):</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">=</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="st">Hi, I am old </span><span class="ss">$name</span><span class="st"> and I am looking for food at </span><span class="ss">$location</span><span class="st">.</span><span class="ss">&quot;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Owl</span><span class="op">(</span>age<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">=</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="st">Hi, I am a </span><span class="ss">$age</span><span class="st"> years old owl and I am flying through </span><span class="ss">$location</span><span class="st">. Hoot, hoot!</span><span class="ss">&quot;</span></span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">checkLocations</span><span class="op">(</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  locations<span class="op">:</span> <span class="ex">List</span><span class="op">[</span><span class="ex">String</span><span class="op">],</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  bird<span class="op">:</span> <span class="op">{</span> <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">}</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="op">):</span> <span class="ex">List</span><span class="op">[</span><span class="ex">String</span><span class="op">]</span> <span class="op">=</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>    location <span class="op">&lt;-</span> locations</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">yield</span> bird<span class="op">.</span><span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">)</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="fu">checkLocations</span><span class="op">(</span><span class="ex">List</span><span class="op">(</span><span class="st">&quot;Sofia&quot;</span><span class="op">,</span> <span class="st">&quot;Varna&quot;</span><span class="op">),</span> <span class="fu">Owl</span><span class="op">(</span><span class="dv">7</span><span class="op">))</span></span></code></pre></div>
+</div>
+</section>
+<section id="структурно-типизиране-в-scala-1" class="slide level1">
+<h1>Структурно типизиране в Scala</h1>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Eagle</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">):</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">=</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="st">Hi, I am old </span><span class="ss">$name</span><span class="st"> and I am looking for food at </span><span class="ss">$location</span><span class="st">.</span><span class="ss">&quot;</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Owl</span><span class="op">(</span>age<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">=</span></span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="st">Hi, I am a </span><span class="ss">$age</span><span class="st"> years old owl and I am flying through </span><span class="ss">$location</span><span class="st">. Hoot, hoot!</span><span class="ss">&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="kw">type</span> Bird <span class="op">=</span> <span class="op">{</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">checkLocations</span><span class="op">(</span>locations<span class="op">:</span> <span class="ex">List</span><span class="op">[</span><span class="ex">String</span><span class="op">],</span> bird<span class="op">:</span> Bird<span class="op">):</span> <span class="ex">List</span><span class="op">[</span><span class="ex">String</span><span class="op">]</span> <span class="op">=</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    location <span class="op">&lt;-</span> locations</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">yield</span> bird<span class="op">.</span><span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">)</span></span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="fu">checkLocations</span><span class="op">(</span><span class="ex">List</span><span class="op">(</span><span class="st">&quot;Sofia&quot;</span><span class="op">,</span> <span class="st">&quot;Varna&quot;</span><span class="op">),</span> <span class="fu">Eagle</span><span class="op">(</span><span class="st">&quot;Henry&quot;</span><span class="op">))</span></span></code></pre></div>
+<ul>
+<li class="fragment">Върху JVM се имплементира чрез reflection, поради
+което изисква:</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> reflect<span class="op">.</span>Selectable<span class="op">.</span>reflectiveSelectable</span></code></pre></div>
+<ul>
+<li class="fragment">Ако не искаме да използваме reflection, можем да
+имплементираме <code>Selectable</code> интерфейса</li>
+</ul>
+</section>
+<section id="типова-алгебра" class="slide level1 scala3">
+<h1 class="scala3">Типова алгебра</h1>
+<div class="fragment">
+<p>Scala 3 добавя сечение (<code>&amp;</code>) и обединение
+(<code>|</code>) на типове</p>
+</div>
+</section>
+<section id="сечение-на-типове" class="slide level1 scala3">
+<h1 class="scala3">Сечение на типове (<code>&amp;</code>)</h1>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> LovingAnimal<span class="op">:</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> name<span class="op">:</span> <span class="ex">String</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> hug <span class="op">=</span> <span class="ss">s&quot;</span><span class="st">A hug from </span><span class="ss">$name&quot;</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Owl</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">,</span> age<span class="op">:</span> <span class="dt">Int</span><span class="op">):</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">flyThrough</span><span class="op">(</span>location<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="ex">String</span> <span class="op">=</span></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>    <span class="ss">s&quot;</span><span class="st">Hi, I am a </span><span class="ss">$age</span><span class="st"> years old owl and I am flying through </span><span class="ss">$location</span><span class="st">. Hoot, hoot!</span><span class="ss">&quot;</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> lovelyOwl<span class="op">:</span> Owl <span class="op">&amp;</span> LovingAnimal <span class="op">=</span> <span class="kw">new</span> <span class="fu">Owl</span><span class="op">(</span><span class="st">&quot;Oliver&quot;</span><span class="op">,</span> <span class="dv">7</span><span class="op">)</span> <span class="kw">with</span> LovingAnimal</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>lovelyOwl<span class="op">.</span>hug <span class="co">// A hug from Oliver</span></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>lovelyOwl<span class="op">.</span><span class="fu">flyThrough</span><span class="op">(</span><span class="st">&quot;Plovdiv&quot;</span><span class="op">)</span> <span class="co">// Hi, I am a 7 years old owl and</span></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>                                <span class="co">// I am flying through Plovdiv. Hoot, hoot!</span></span></code></pre></div>
+</section>
+<section id="обединение-на-типове" class="slide level1 scala3">
+<h1 class="scala3">Обединение на типове (<code>|</code>)</h1>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">toInteger</span><span class="op">(</span>value<span class="op">:</span> <span class="ex">String</span> <span class="op">|</span> <span class="dt">Int</span> <span class="op">|</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> value <span class="cf">match</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> n<span class="op">:</span> <span class="dt">Int</span> <span class="op">=&gt;</span> n</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> s<span class="op">:</span> <span class="ex">String</span> <span class="op">=&gt;</span> s<span class="op">.</span>toInt</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> d<span class="op">:</span> <span class="dt">Double</span> <span class="op">=&gt;</span> d<span class="op">.</span>toInt</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="fu">toInteger</span><span class="op">(</span><span class="st">&quot;10&quot;</span><span class="op">)</span> <span class="co">// 10</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="fu">toInteger</span><span class="op">(</span><span class="dv">10</span><span class="op">)</span> <span class="co">// 10</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="fu">toInteger</span><span class="op">(</span><span class="fl">10.0</span><span class="op">)</span> <span class="co">// 10</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="fu">toInteger</span><span class="op">(</span><span class="ex">List</span><span class="op">(</span><span class="dv">10</span><span class="op">))</span> <span class="co">// не се компилира</span></span></code></pre></div>
+</section>
+<section id="обединение-на-типове-1" class="slide level1 scala3">
+<h1 class="scala3">Обединение на типове (<code>|</code>)</h1>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">toInteger</span><span class="op">(</span>value<span class="op">:</span> <span class="ex">String</span> <span class="op">|</span> <span class="dt">Int</span> <span class="op">|</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Int</span> <span class="op">=</span> value <span class="cf">match</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> n<span class="op">:</span> <span class="dt">Int</span> <span class="op">=&gt;</span> n</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> s<span class="op">:</span> <span class="ex">String</span> <span class="op">=&gt;</span> s<span class="op">.</span>toInt</span></code></pre></div>
+<div class="fragment">
+<pre><code>|def toInteger(value: String | Int | Double): Int = value match
+|                                                   ^^^^^
+|                                  match may not be exhaustive.
+|
+|                                  It would fail on pattern case: _: Double</code></pre>
+</div>
+<div class="fragment">
+<p>Превърнете в грешка чрез<br /><code>-Xfatal-warnings</code>:</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>scalacOptions <span class="op">+=</span> <span class="st">&quot;-Xfatal-warnings&quot;</span></span></code></pre></div>
+</div>
+</section>
+<section id="обединение-на-типове-2" class="slide level1 scala3">
+<h1 class="scala3">Обединение на типове (<code>|</code>)</h1>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">registerUser</span><span class="op">(</span>registrationForm<span class="op">:</span> RegistrationForm<span class="op">):</span> RegistrationFormError <span class="op">|</span> User <span class="op">=</span> <span class="op">???</span></span></code></pre></div>
+</section>
+<section id="the-expression-problem" class="slide level1">
+<h1>The Expression Problem</h1>
+<div class="fragment">
+<blockquote>
+<p>The goal is to define a datatype by cases, where one can add new
+cases to the datatype and new functions over the datatype, without
+recompiling existing code, and while retaining static type safety (e.g.,
+no casts).</p>
+</blockquote>
+</div>
+</section>
+<section id="the-expression-problem-алтернативно" class="slide level1">
+<h1>The Expression Problem (алтернативно)</h1>
+<ul>
+<li class="fragment">Добавяне на нов тип без промяна на съществуващия
+код</li>
+<li class="fragment">Добавяне на нова операция без промяна на
+съществуващия код</li>
+</ul>
+</section>
+<section id="ооп-подход" class="slide level1">
+<h1>ООП подход</h1>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> math<span class="op">.</span>Pi <span class="op">*</span> r <span class="op">*</span> r</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> a <span class="op">*</span> b</span></code></pre></div>
+</section>
+<section id="фп-подход" class="slide level1">
+<h1>ФП подход</h1>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> <span class="ex">Shape</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">area</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">Shape</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> s <span class="cf">match</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">)</span> <span class="op">=&gt;</span> math<span class="op">.</span>Pi <span class="op">*</span> r <span class="op">*</span> r</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">)</span> <span class="op">=&gt;</span> a <span class="op">*</span> b</span></code></pre></div>
+<div class="fragment">
+<p><code>case</code> класовете могат да бъдат използвани в pattern
+matching</p>
+</div>
+</section>
+<section id="добавяне-на-операция-във-фп-лесно" class="slide level1">
+<h1>Добавяне на операция във ФП – лесно</h1>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">circumference</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">Shape</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> s <span class="cf">match</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">)</span> <span class="op">=&gt;</span> <span class="dv">2</span> <span class="op">*</span> math<span class="op">.</span>Pi <span class="op">*</span> r</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">)</span> <span class="op">=&gt;</span> <span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>a <span class="op">+</span> b<span class="op">)</span></span></code></pre></div>
+</section>
+<section
+id="добавяне-на-операция-в-ооп-трудно-промяна-на-всички-класове"
+class="slide level1">
+<h1>Добавяне на операция в ООП – трудно, промяна на всички класове</h1>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> circumference<span class="op">:</span> <span class="dt">Double</span></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> math<span class="op">.</span>Pi <span class="op">*</span> r <span class="op">*</span> r</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> circumference <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> math<span class="op">.</span>Pi <span class="op">*</span> r</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> b<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> a <span class="op">*</span> b</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> circumference <span class="op">=</span> <span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>a <span class="op">+</span> b<span class="op">)</span></span></code></pre></div>
+</section>
+<section id="добавяне-на-тип-в-ооп-лесно" class="slide level1">
+<h1>Добавяне на тип в ООП – лесно</h1>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Square</span><span class="op">(</span>a<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span><span class="op">:</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> area<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> a <span class="op">*</span> a</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> circumference<span class="op">:</span> <span class="dt">Double</span> <span class="op">=</span> <span class="dv">4</span> <span class="op">*</span> a</span></code></pre></div>
+</section>
+<section id="добавяне-на-тип-във-фп-трудно" class="slide level1">
+<h1>Добавяне на тип във ФП – трудно</h1>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Square</span><span class="op">(</span>a<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">area</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">Shape</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> s <span class="cf">match</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">)</span> <span class="op">=&gt;</span> math<span class="op">.</span>Pi <span class="op">*</span> r <span class="op">*</span> r</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">)</span> <span class="op">=&gt;</span> a <span class="op">*</span> b</span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Square</span><span class="op">(</span>a<span class="op">)</span> <span class="op">=&gt;</span> a <span class="op">*</span> a</span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">circumference</span><span class="op">(</span>s<span class="op">:</span> <span class="ex">Shape</span><span class="op">):</span> <span class="dt">Double</span> <span class="op">=</span> s <span class="cf">match</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Circle</span><span class="op">(</span>r<span class="op">)</span> <span class="op">=&gt;</span> <span class="dv">2</span> <span class="op">*</span> math<span class="op">.</span>Pi <span class="op">*</span> r</span>
+<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Rectangle</span><span class="op">(</span>a<span class="op">,</span> b<span class="op">)</span> <span class="op">=&gt;</span> <span class="dv">2</span> <span class="op">*</span> <span class="op">(</span>a <span class="op">+</span> b<span class="op">)</span></span>
+<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Square</span><span class="op">(</span>a<span class="op">)</span> <span class="op">=&gt;</span> <span class="dv">4</span> <span class="op">*</span> a</span></code></pre></div>
+</section>
+<section id="the-expression-problem-1" class="slide level1">
+<h1>The Expression Problem</h1>
+<ul>
+<li class="fragment">Всеки език е добре да предоставя изразни средства и
+за двата проблема</li>
+<li class="fragment">ООП подходът е подходящ за типове с предварително
+неизвестен брой случаи и малко основни операции</li>
+<li class="fragment">Функционалният подход е подходящ за типове с
+предварително фиксирани случаи</li>
+</ul>
+</section>
+<section id="extension-methods" class="slide level1">
+<h1>Extension Methods</h1>
+<ul>
+<li class="fragment">Добавяне на методи към съществуващи типове</li>
+<li class="fragment">Само в текущия scope</li>
+</ul>
+</section>
+<section id="extension-methods-1" class="slide level1 scala3">
+<h1 class="scala3">Extension Methods</h1>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extension</span> <span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> squared <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">**(</span>exp<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">=</span> math<span class="op">.</span><span class="fu">pow</span><span class="op">(</span>n<span class="op">,</span> exp<span class="op">)</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span>squared <span class="co">// 9</span></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span> <span class="co">// 8.0</span></span></code></pre></div>
+</section>
+<section id="extension-methods-2" class="slide level1 scala3">
+<h1 class="scala3">Extension Methods</h1>
+<p>Могат да бъдат overload-вани,<br />import-ват се по името на
+метода:</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co">// file NumberExtensions.scala</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> scalafmi<span class="op">.</span>numberextensions</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="fu">extension</span> <span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> squared <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">**(</span>exp<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">=</span> math<span class="op">.</span><span class="fu">pow</span><span class="op">(</span>n<span class="op">,</span> exp<span class="op">)</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a><span class="fu">extension</span> <span class="op">(</span>n<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> squared <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">**(</span>exp<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">=</span> math<span class="op">.</span><span class="fu">pow</span><span class="op">(</span>n<span class="op">,</span> exp<span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co">// file Demo.scala</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scalafmi<span class="op">.</span>numberextensions<span class="op">.{</span> squared<span class="op">,</span> <span class="op">**</span> <span class="op">}</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span>squared <span class="co">// 9</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span> <span class="co">// 8.0</span></span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="dv">3</span><span class="op">.</span><span class="fl">14.</span>squared</span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fl">2.71</span> <span class="op">**</span> <span class="dv">4</span></span></code></pre></div>
+</section>
+<section id="extension-methods-3" class="slide level1 scala3">
+<h1 class="scala3">Extension Methods</h1>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extension</span> <span class="op">(</span>xs<span class="op">:</span> <span class="ex">List</span><span class="op">[</span><span class="dt">Double</span><span class="op">])</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> avg <span class="op">=</span> xs<span class="op">.</span>sum <span class="op">/</span> xs<span class="op">.</span>size</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="ex">List</span><span class="op">(</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">).</span>avg <span class="co">// 2.0</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="ex">List</span><span class="op">(</span><span class="st">&quot;a&quot;</span><span class="op">,</span> <span class="st">&quot;b&quot;</span><span class="op">,</span> <span class="st">&quot;c&quot;</span><span class="op">).</span>avg <span class="co">// грешка, value avg is not a member of List[String]</span></span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>extension <span class="op">[</span>A<span class="op">](</span>xs<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>A<span class="op">])</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> second <span class="op">=</span> xs<span class="op">.</span>tail<span class="op">.</span>head</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="ex">List</span><span class="op">(</span><span class="fl">1.0</span><span class="op">,</span> <span class="fl">2.0</span><span class="op">,</span> <span class="fl">3.0</span><span class="op">).</span>second <span class="co">// 2.0</span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="ex">List</span><span class="op">(</span><span class="st">&quot;a&quot;</span><span class="op">,</span> <span class="st">&quot;b&quot;</span><span class="op">,</span> <span class="st">&quot;c&quot;</span><span class="op">).</span>second <span class="co">// b</span></span></code></pre></div>
+</div>
+</section>
+<section id="търсене-на-extension-методи-точно-като-при-implicits"
+class="slide level1">
+<h1>Търсене на extension методи –<br />точно като при implicits</h1>
+<ol type="1">
+<li>В текущия scope (чрез текущ или външен блок или чрез import)</li>
+<li>В продружаващия обект на който и да е от участващите типове</li>
+</ol>
+</section>
+<section id="extension-методи-в-придружаващ-обект" class="slide level1">
+<h1>Extension методи в придружаващ обект</h1>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="kw">object</span> Rational<span class="op">:</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extension</span> <span class="op">(</span>xs<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>Rational<span class="op">])</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> total<span class="op">:</span> Rational <span class="op">=</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> xs<span class="op">.</span>isEmpty <span class="cf">then</span> <span class="dv">0</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> xs<span class="op">.</span>head <span class="op">+</span> xs<span class="op">.</span>tail<span class="op">.</span>total</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> avg<span class="op">:</span> Rational <span class="op">=</span> xs<span class="op">.</span>total <span class="op">/</span> xs<span class="op">.</span>size</span></code></pre></div>
+</section>
+<section id="extension-methods-в-scala-2" class="slide level1">
+<h1>Extension Methods в Scala 2</h1>
+<ul>
+<li class="fragment">Scala 2 също позволява добавяне на методи</li>
+<li class="fragment">Използва се механизма за implicit конверсия</li>
+<li class="fragment">Все още се среща масово в библиотеките за
+Scala<br />(независимо от версията)</li>
+</ul>
+</section>
+<section id="extension-methods-чрез-implicit-стар-подход-от-scala-2"
+class="slide level1">
+<h1>Extension Methods чрез implicit<br />(стар подход от Scala 2)</h1>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">EnrichedInt</span><span class="op">(</span><span class="kw">val</span> n<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="kw">extends</span> AnyVal<span class="op">:</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> squared <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">**(</span>exp<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">=</span> math<span class="op">.</span><span class="fu">pow</span><span class="op">(</span>n<span class="op">,</span> exp<span class="op">)</span></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="kw">implicit</span> <span class="kw">def</span> <span class="fu">intToEnrichedInt</span><span class="op">(</span>n<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="op">=</span> <span class="kw">new</span> <span class="fu">EnrichedInt</span><span class="op">(</span>n<span class="op">)</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span>squared <span class="co">// 9</span></span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span> <span class="co">// 8.0</span></span></code></pre></div>
+</section>
+<section id="extension-methods-чрез-implicit-стар-подход-от-scala-2-1"
+class="slide level1">
+<h1>Extension Methods чрез implicit<br />(стар подход от Scala 2)</h1>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="kw">implicit</span> <span class="kw">class</span> <span class="fu">EnrichedInt</span><span class="op">(</span><span class="kw">val</span> n<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="kw">extends</span> AnyVal<span class="op">:</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> squared <span class="op">=</span> n <span class="op">*</span> n</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="op">**(</span>exp<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="op">=</span> math<span class="op">.</span><span class="fu">pow</span><span class="op">(</span>n<span class="op">,</span> exp<span class="op">)</span></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="fl">3.</span>squared <span class="co">// 9</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span> <span class="op">**</span> <span class="dv">3</span> <span class="co">// 8.0</span></span></code></pre></div>
+<div class="fragment">
+<p>Тук не е нужен
+<code>import scala.language.implicitConversions</code></p>
+</div>
+</section>
+<section id="примери-от-стандартната-библиотека" class="slide level1">
+<h1>Примери от стандартната библиотека</h1>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">-&gt;</span> <span class="st">&quot;One&quot;</span> <span class="co">// (1, &quot;One&quot;), -&gt; се добавя към всички типове</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a><span class="co">// extension methods се използва за добавяне на методите за колекции върху String</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;abcdef&quot;</span><span class="op">.</span><span class="fu">take</span><span class="op">(</span><span class="dv">2</span><span class="op">)</span> <span class="co">// ab</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>concurrent<span class="op">.</span>duration<span class="op">.</span>DurationInt</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="fl">5.</span>seconds <span class="co">// scala.concurrent.duration.FiniteDuration = 5 seconds</span></span></code></pre></div>
+</section>
+<section id="ооп-дизайн" class="slide level1">
+<h1>ООП дизайн?</h1>
+</section>
+<section id="ооп-дизайн-скрити-домейн-обекти" class="slide level1">
+<h1>ООП дизайн – скрити домейн обекти</h1>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">buyTea</span><span class="op">(</span>cc<span class="op">:</span> CreditCard<span class="op">,</span> paymentService<span class="op">:</span> PaymentService<span class="op">):</span> Tea <span class="op">=</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> teaCup <span class="op">=</span> <span class="kw">new</span> <span class="fu">Tea</span><span class="op">(...)</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  paymentService<span class="op">.</span><span class="fu">charge</span><span class="op">(</span>cc<span class="op">,</span> teaCup<span class="op">.</span>price<span class="op">)</span></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>  teaCup</span></code></pre></div>
+<div class="fragment">
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Charge</span><span class="op">(</span>cc<span class="op">:</span> CreditCard<span class="op">,</span> amount<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">buyTea</span><span class="op">(</span>cc<span class="op">:</span> CreditCard<span class="op">):</span> <span class="op">(</span>Tea<span class="op">,</span> Charge<span class="op">)</span> <span class="op">=</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">val</span> teaCup <span class="op">=</span> <span class="kw">new</span> <span class="fu">Tea</span><span class="op">(...)</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="op">(</span>teaCup<span class="op">,</span> <span class="fu">Charge</span><span class="op">(</span>cc<span class="op">,</span> teatCup<span class="op">.</span>price<span class="op">)</span></span></code></pre></div>
+</div>
+<div class="fragment">
+<p>Отлагане на страничния ефект =&gt;</p>
+<ul>
+<li class="fragment">скрити домейн концепции изплуват на яве
+(<code>Charge</code> обект)</li>
+<li class="fragment">моделираме дейности като данни</li>
+<li class="fragment">които допълнително можем да трансформираме
+функционално
+<ul>
+<li class="fragment">купуване на n кафета и събиране на Charge-ове</li>
+<li class="fragment">анализ на Charge-ове от различни потребители</li>
+</ul></li>
+<li class="fragment">по-добра тестваемост</li>
+</ul>
+</div>
+</section>
+<section id="таблица-на-типовите-елементи-в-scala" class="slide level1">
+<h1><a
+href="https://github.com/scala-fmi/scala-fmi-2024/blob/main/resources/type-elements-in-scala.md">Таблица
+на типовите елементи в Scala</a></h1>
+</section>
+<section id="въпроси" class="slide level1">
+<h1>Въпроси :)?</h1>
+</section>
+    </div>
+  </div>
+
+  <script src="reveal-js/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="reveal-js/plugin/notes/notes.js"></script>
+  <script src="reveal-js/plugin/search/search.js"></script>
+  <script src="reveal-js/plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'fade',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>
