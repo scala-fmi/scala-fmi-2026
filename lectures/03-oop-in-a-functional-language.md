@@ -1,3 +1,445 @@
+---
+title: ООП във функционален език
+---
+
+# Обектно-ориентирано програмиране
+
+?
+
+# Обектно-ориентирано програмиране (C++, ООП, 1 курс)
+
+* Изброими типове (enums)
+* Четене и писане в текстови и двоични файлове
+* Класове, обекти, методи, конструктори, селектори (getter-и) и мутатори (setter-и)
+* Rule of 3 - копиращ конструктор, оператор =, деструктор
+* Статични полета и методи
+* Изключения (exceptions)
+* Предефиниране на оператори
+* Наследяване и композиция
+* Абстрактни класове
+* Полиморфизъм
+* Множествено наследяване
+* Шаблони за дизайн - Singleton, Factory, Builder
+* Шаблони (Templates)
+
+# "Кои са 4-те принципа на ООП-то?" (C++, ООП, 1 курс)
+
+::: incremental
+
+* Енкапсулация
+* Абстракция
+* Наследяване
+    * (Преизползване)
+* Полиморфизъм
+
+:::
+
+# Кой е това?
+
+![](images/03-oop-in-a-functional-language/alan-kay.jpg){ height=512 }
+
+# Кой е това?
+
+![](images/03-oop-in-a-functional-language/alan-kay.jpg){ height=384 }
+![](images/03-oop-in-a-functional-language/alan-kay-raising-hand.png){ height=384 }
+
+::: { .fragment }
+
+Alan Kay<span class="fragment"><br/>предлага термина ООП (c. 1967)</span>
+
+::: 
+
+# ООП?
+
+> “I made up the term ‘object-oriented’, and I can tell you I didn’t have C++ in mind.” -- Alan Kay
+
+# [Dr. Alan Kay on the Meaning of<br />“Object-Oriented Programming”](http://userpage.fu-berlin.de/~ram/pub/pub_jf47ht81Ht/doc_kay_oop_en)
+
+> “I thought of objects being like biological cells and/or individual computers on a network, only able to communicate with messages… <span class="fragment">OOP to me means only messaging, local retention and protection and hiding of state-process, and extreme late-binding of all things.” -- Alan Kay</span>
+
+::: { .fragment }
+
+Забележете, че не се споменават класове, наследяване и др.
+
+:::
+
+# В основата на ООП -- съобщенията
+
+![](images/03-oop-in-a-functional-language/messaging.png){ height=256 style="border-radius: 10px" }
+
+::: incremental
+
+* Множество познати ни ООП принципи (като SOLID) се фокусират върху практики за дизайн на **един** клас
+* ООП всъщност е:
+  - система от обекти,
+  - комуникиращи помежду си
+* Добър ООП дизайн обхваща цялостната комуникация и участващите обекти
+* В познатите езикови ни конструкции съобщения са методите
+
+:::
+
+# Енкапсулация
+
+::: incremental
+
+* Не е просто getter-и и setter-и
+* Контрол над това как външният свят може да достъпва или модифицира данните
+* Обектите не са структури от данни
+* Енкапсулацията при обектите се отнася до това, че скриват своето състояние и структурите, които използват, от другите обекти
+* Обектите си взаимодействат единствено през ясен протокол (интерфейс/възможни съобщения) - поведение на обекта
+
+:::
+
+# Late Binding
+
+::: incremental
+
+* Конкретното поведение, което ще се изпълни, се разбира едва по време на изпълнение
+* Подтиповия полиморфизъм е един аспект на late binding
+* В по-голям мащаб: подмяна на части от системата без да се спира цялата система
+
+:::
+
+# [ООП + ФП?](https://www.quora.com/Why-is-functional-programming-seen-as-the-opposite-of-OOP-rather-than-an-addition-to-it/answer/Alan-Kay-11)
+
+::: incremental
+
+* ООП не предполага странични ефекти
+* Може да се използва по immutable и функционален подход
+
+:::
+
+::: { .fragment }
+
+> "So: both OOP and functional computation can be completely compatible (and should be!). There is no reason to munge state in objects, and there is no reason to invent “monads” in FP. We just have to realize that “computers are simulators” and figure out what to simulate." -- Alan Kay
+
+:::
+
+# Дефиниране на клас
+
+* Параметри на клас -- конструктор
+* Членове
+* Модификатори на достъп
+
+::: { .fragment }
+
+Да дефинираме клас `Rational`
+
+:::
+
+# Дефиниране на обект
+
+::: { .fragment }
+
+```scala
+object Math:
+  val Pi = 3.14159
+
+  def gcd(a: Int, b: Int): Int = if b == 0 then a else gcd(b, a % b)
+  
+  def squared(n: Int) = n * n
+
+Math.Pi
+Math.gcd(27, 12)
+```
+
+:::
+
+::: { .fragment }
+
+```scala
+val m: Math.type = Math
+m.squared(9)
+```
+
+:::
+
+# `apply` методи
+
+Всеки обект с `apply` метод може да бъде използван като функция:
+
+::: { .fragment }
+
+```scala
+object AddTwo:
+  def apply(n: Int): Int = n + 2
+
+val theLongAnswer = AddTwo.apply(40) // 42
+val theAnswer = AddTwo(40) // 42
+```
+
+:::
+
+# `apply` методи
+
+```scala
+class Interval(a: Int, b: Int, inclusive: Boolean = true):
+  require(a <= b)
+  
+  def apply(n: Int) =
+    if (inclusive) a <= n && n <= b
+    else a < n && n < b
+
+val percentageInterval = new Interval(0, 100)
+percentageInterval(42) // true
+percentageInterval(110) // false
+```
+
+# Обекти-другарчета (придружаващи/companion обекти)
+
+::: incremental
+
+* В Scala класовете нямат статични методи
+* Вместо това помощни функции могат да бъдат дефинирани в техните придружаващи обекти 🤝
+* Обект придружава клас, ако
+  - е дефиниран със същото име като класа и
+  - се намира в същия файл
+
+:::
+
+# Обекти-другарчета (придружаващи/companion обекти)
+
+```scala
+class Rational:
+  // ...
+
+object Rational:
+  val Zero = Rational(0) // използва apply, дефиниран долу
+  
+  def apply(n: Int, d: Int = 1) = new Rational(n, d)
+  
+  def sum(rationals: Rational*): Rational =
+    if rationals.isEmpty then Zero
+    else rationals.head + sum(rationals.tail)
+
+Rational.sum(Rational(1, 2), Rational(5), Rational(3, 5)) // не е нужно да пишем new
+```
+
+# Придружаващи обекти
+
+`List(1, 2, 3)` се свежда до `List.apply(1, 2, 3)`,<br />което е функция с променлив брой параметри
+
+# Придружаващи обекти
+
+Имат достъп и до private/protected членовете:
+
+```scala
+class Rational private (n: Int, d: Int):
+  private def toDouble = n.toDouble / d
+  
+  // ...
+
+
+object Rational:
+  def apply(n: Int, d: Int = 1) = new Rational(n, d)
+  
+  def isSmaller(a: Rational, b: Rational) = a.toDouble < b.toDouble
+
+
+Rational.isSmaller(Rational(1, 2), Rational(3, 4)) // true
+```
+
+# implicit конверсия
+
+```scala
+Rational(2, 3) + 1 // грешка при компилиране, + приема Rational, не Int
+```
+
+::: { .fragment }
+
+```scala
+implicit def intToRational(n: Int): Rational = Rational(n)
+
+Rational(2, 3) + 1 // Rational(5, 3), работи
+```
+
+:::
+
+# implicit конверсия
+
+```scala
+implicit def intToRational(n: Int): Rational = Rational(n)
+
+Rational(2, 3) + 1 // Rational(5, 3)
+1 + Rational(2, 3)  // Rational(5, 3), също работи
+```
+
+::: { .fragment }
+
+Преобразува се до:
+
+```scala
+Rational(2, 3) + intToRational(1) // Rational(5, 3)
+intToRational(1) + Rational(2, 3)  // Rational(5, 3), също работи
+```
+
+:::
+
+::: { .fragment }
+
+Когато компилаторът не открие метод с очакваните име и параметри<br />решава да потърси за възможна имплицитна конверсия към тип,<br />който има този метод
+
+:::
+
+# implicit конверсия -- ред на търсене
+
+1. В текущия scope (чрез текущ или външен блок или чрез import)
+2. В продружаващия обект на който и да е от участващите типове
+
+# Още за implicit конверсии
+
+::: incremental
+
+* Добре е да се ограничават
+* Изискват `import scala.language.implicitConversions`
+* Препоръчително е използването на конверсии с по-конкретни типове пред по-общи
+
+:::
+
+# X-Ray от IntelliJ 2023.3
+
+* Показва цялата липсваща типова информация с един shortcut – типове на променливи, функции, междинни изрази и други
+* През него IntelliJ ни показва също използваните implicit конверсии 
+* Shortcut: натиснете Ctrl (или Cmd на Mac) два пъти и задръжте
+* През него може да се навигира към използваната функция за конверсия
+* От 2024.1 – могат да се включват за постоянно чрез `Ctrl/Cmd + Alt + Shift + X`
+
+# case класове
+
+```scala
+case class Person(name: String, age: Int, address: String)
+
+val vasil = Person("Vasil", 38, "Sofia")
+```
+
+::: incremental
+
+* неизменим value клас
+* всички изброени параметри автоматично стават `val` полета
+* автоматично генериране на:
+  - придружаващ обект с `apply`
+  - `equals`, `hashCode`, `toString`
+    ```scala
+      Person("Vasil", 38, "Sofia") == Person("Vasil", 38, "Sofia") // true
+    ```
+  - `copy` -- позволява инстанциране на нова версия, базирана на съществуващата
+    ```scala
+       def getOlder(person: Person): Person = person.copy(age = person.age + 1)
+    ```
+  - още няколко удобства -- за тях по-натам
+
+:::
+
+# Влагане на case класове
+
+```scala
+case class Person(name: String, age: Int, address: Address)
+case class Address(country: String, city: String, street: String)
+
+val radost = Person("Radost", 24, Address("Bulgaria", "Veliko Tarnovo", "ul. Roza"))
+```
+
+# Поведение на case класове
+
+```scala
+case class Circle(radius: Double):
+  def area = math.Pi * radius * radius
+
+```
+
+```scala
+case class Person(name: String, age: Int, address: Address):
+  def sayHiTo(person: Person): String =
+    s"Hi ${person.name}! I am $name from ${address.country}"
+```
+
+# Универсален apply { .scala3 }
+
+В Scala 3 автоматично се генерира придружаващ обект с apply за всеки клас (не само за case класовете):
+
+::: { .fragment }
+
+```scala
+class Rational(n: Int, d: Int)
+
+Rational(1, 2) // работи
+new Rational(1, 2) // също работи
+```
+
+:::
+
+# Абстрактни типове -- trait
+
+```scala
+trait Ordered[A]:
+  def compare(that: A): Int
+  
+  def <(that: A): Boolean = compare(that) < 0
+  def <=(that: A): Boolean = compare(that) <= 0
+  def >(that: A): Boolean = compare(that) > 0
+  def >=(that: A): Boolean = compare(that) >= 0
+```
+
+# Абстрактни типове -- trait
+
+```scala
+class Rational(n: Int, d: Int) extends Ordered[Rational]):
+  // ...
+
+  def compare(that: Rational): Int = (this - that).numer
+
+Rational(3, 4) < Rational(1, 2) // false
+```
+
+# Uniform Access Principal
+
+```scala
+trait Humanoid:
+  def name: String
+  def age: Int
+```
+
+::: { .fragment }
+
+```scala
+class Person(n: String, a: Int) extends Humanoid:
+  val name = n
+  val age = a
+
+class Robot(brand: String, serialNumber: String, a: Int) extends Humanoid:
+  def name = s"$brand--$serialNumber"
+  val age = a
+```
+
+:::
+
+::: { .fragment }
+
+```scala
+val personName = new Person("Alex", 21).name
+val robotName = new Robot("mi6-42", "000007", 1).name
+```
+
+:::
+
+::: { .fragment }
+
+UAC -- интерфейсът не се променя от това дали дадено име е имплементирано чрез ичисление (`def`)<br />или чрез съхранена стойност (`val`)
+
+:::
+
+# Uniform Access Principal и case класове
+
+```scala
+trait Humanoid:
+  def name: String
+  def age: Int
+
+case class Person(name: String, age: Int) extends Humanoid
+case class Robot(brand: String, serialNumber: String, age: Int) extends Humanoid:
+  def name = s"$brand--$serialNumber"
+```
+
 # import клаузи
 
 ::: { .fragment }
