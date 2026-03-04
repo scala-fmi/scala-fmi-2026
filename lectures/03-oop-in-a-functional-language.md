@@ -65,7 +65,9 @@ Alan Kay<span class="fragment"><br/>предлага термина ООП (c. 1
 
 # В основата на ООП -- съобщенията
 
-![](images/03-oop-in-a-functional-language/messaging.png){ height=256 style="border-radius: 10px" }
+<p style="margin: 0">
+![](images/03-oop-in-a-functional-language/messaging.png){ height=200 style="border-radius: 10px; margin: 0" }
+</p>
 
 ::: incremental
 
@@ -75,6 +77,9 @@ Alan Kay<span class="fragment"><br/>предлага термина ООП (c. 1
   - комуникиращи помежду си
 * Добър ООП дизайн обхваща цялостната комуникация и участващите обекти
 * В познатите езикови ни конструкции съобщения са методите
+* Алън Кей прави паралел с биологичните организми
+  * система от самостоятелни клетки и органи,
+  * комуникиращи си чрез хормони, нервни сигнали, messengerRNA и др.
 
 :::
 
@@ -112,6 +117,16 @@ Alan Kay<span class="fragment"><br/>предлага термина ООП (c. 1
 ::: { .fragment }
 
 > "So: both OOP and functional computation can be completely compatible (and should be!). There is no reason to munge state in objects, and there is no reason to invent “monads” in FP. We just have to realize that “computers are simulators” and figure out what to simulate." -- Alan Kay
+
+:::
+
+::: { .fragment }
+
+ООП във функционален език:
+
+* Структура и модулярност 
+* Контекст (в който са валидни функциите)
+* Подтипов полиморфизъм и late binding
 
 :::
 
@@ -761,47 +776,76 @@ import scala.concurrent.duration.DurationInt
 5.seconds // scala.concurrent.duration.FiniteDuration = 5 seconds
 ```
 
-# Opaque Types
-
-::: incremental
+# Когато типът е твърде общ?
 
 ```scala
 def createAddressRegistration(personId: String, locationId: String) = ???
 ```
 
 ```scala
-createAddressRegistration(locationId, personId) // compiles 😬
+val stoyanId = "100"
+val ruseId = "5"
+createAddressRegistration(ruseId, stoyanId) // компилира се 😬
+```
+
+# Type Safety чрез opaque типове { .scala3 }
+
+```scala
+opaque type PersonId = String
+object PersonId:
+  def apply(id: String): PersonId = id
+  extension (personId: PersonId) def value: String = personId
+
+opaque type LocationId = String
+object LocationId:
+  def apply(id: String): LocationId = id
+  extension (locationId: LocationId) def value: String = locationId
+
+def createAddressRegistration(person: PersonId, location: LocationId) = ???
+```
+
+::: { .fragment }
+
+```scala
+val stoyanId = PersonId("100")
+val ruseId = LocationId("5")
+createAddressRegistration(stoyanId, ruseId) // успех
+createAddressRegistration(ruseId, stoyanId) // грешка, не е възможно да ги объркаме
 ```
 
 :::
 
-# Opaque Types { .scala3 }
-
-* Same safety goal, fewer JVM compromises, guaranteed allocation-free, and the abstraction boundary is stronger.
-
 ::: incremental
 
-```scala
-object domain:
-  opaque type PersonId = String
-  object PersonId:
-    def apply(s: String): PersonId = s
-    extension (id: PersonId) def value: String = id
+* Компилаторът счита `PersonId` и `LocationId` като напълно различни типове
+  * с изключение в scope-а, в който са дефинирани – там те са взаимозаменяеми
+* Runtime и двете се представят чрез типа `String`
+* Това осигурява type safety за ползвателите на opaque типовете
+* В Scala 2 подобно поведение се постига чрез [`AnyVal` класове](https://scala-fmi.github.io/scala-fmi-2024/lectures/03-oop-in-a-functional-language.html#/anyval-%D0%BA%D0%BB%D0%B0%D1%81%D0%BE%D0%B2%D0%B5/4)
 
-  opaque type LocationId = String
-  object LocationId:
-    def apply(s: String): LocationId = s
-    extension (id: LocationId) def value: String = id
-```
+:::
+
+# Opaque типовете могат да дефинират операции
 
 ```scala
-createAddressRegistration(PersonId("100"), LocationId("5")) // OK
-createAddressRegistration(LocationId("5"), PersonId("100")) // won't compile
+opaque type Meter = Double
+object Meter:
+  def apply(value: Double): Meter = value
+  extension (self: Meter)
+    def value: Double = self
+    def +(that: Meter): Meter = Meter(self + that)
+    def *(coefficient: Double): Meter = Meter(coefficient * self)
+    def show: String = s"$self meters"
 ```
 
-* Under the hood it’s still a String at runtime (so it’s “zero allocation” in the way you actually care about).
-* Outside the defining scope, PersonId is not treated as a String. You only expose what you choose (via extensions / methods).
-* No “single-val constructor” limitation because it’s not a class.
+::: { .fragment }
+
+```scala
+case class Circle(radius: Meter):
+  def circumference: Meter = radius * 2 * math.Pi
+
+Circle(Meter(2)).circumference.show // 12.566370614359172 meters
+```
 
 :::
 
