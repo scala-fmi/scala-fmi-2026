@@ -24,8 +24,8 @@ def fee(p: Payment): Int = p match
 // sealed trait Payment
 // object Payment:
 //   case object Cash extends Payment
-//   final case class Card(last4: String) extends Payment
-//   final case class BankTransfer(iban: String) extends Payment
+//   case class Card(last4: String) extends Payment
+//   case class BankTransfer(iban: String) extends Payment
 
 object Enums:
   @main def enumerations(): Unit =

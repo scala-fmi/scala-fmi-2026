@@ -597,7 +597,171 @@ val copiedImage = copier.print(copier.scan(image))
 image == copiedImage // true, hopefully :D
 ```
 
-# Value класове
+# Изброени типове { .scala3 }
+
+```scala
+enum WeekDay:
+  case Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
+```
+
+::: { .fragment }
+
+```scala
+def isWorkingDay(day: WeekDay) = day != WeekDay.Saturday && day != WeekDay.Sunday
+isWorkingDay(WeekDay.Wednesday) // true, :(
+```
+
+:::
+
+::: { .fragment }
+
+```scala
+WeekDay.valueOf("Monday") // WeekDay.Monday
+
+WeekDay.values // Array(Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)
+```
+
+:::
+
+# Extension Methods
+
+::: incremental
+
+* Добавяне на методи към съществуващи типове
+* Само в текущия scope
+
+:::
+
+# Extension Methods { .scala3 }
+
+```scala
+extension (n: Int)
+  def squared = n * n
+  def **(exp: Double) = math.pow(n, exp)
+
+3.squared // 9
+2 ** 3 // 8.0
+```
+
+# Extension Methods { .scala3 }
+
+Могат да бъдат overload-вани,<br />import-ват се по името на метода:
+
+```scala
+// file NumberExtensions.scala
+package scalafmi.numberextensions
+
+extension (n: Int)
+  def squared = n * n
+  def **(exp: Double) = math.pow(n, exp)
+
+extension (n: Double)
+  def squared = n * n
+  def **(exp: Double) = math.pow(n, exp)
+```
+
+```scala
+// file Demo.scala
+import scalafmi.numberextensions.{ squared, ** }
+
+3.squared // 9
+2 ** 3 // 8.0
+
+3.14.squared
+2.71 ** 4
+```
+
+# Extension Methods { .scala3 }
+
+```scala
+extension (xs: List[Double])
+  def avg = xs.sum / xs.size
+
+List(1.0, 2.0, 3.0).avg // 2.0
+List("a", "b", "c").avg // грешка, value avg is not a member of List[String]
+```
+
+::: { .fragment }
+
+```scala
+extension [A](xs: List[A])
+  def second = xs.tail.head
+
+List(1.0, 2.0, 3.0).second // 2.0
+List("a", "b", "c").second // b
+```
+:::
+
+# Търсене на extension методи –<br />точно като при implicits
+
+1. В текущия scope (чрез текущ или външен блок или чрез import)
+2. В продружаващия обект на който и да е от участващите типове
+
+# Extension методи в придружаващ обект
+
+```scala
+object Rational:
+  extension (xs: List[Rational])
+    def total: Rational =
+      if xs.isEmpty then 0
+      else xs.head + xs.tail.total
+      
+    def avg: Rational = xs.total / xs.size
+```
+
+# Extension Methods в Scala 2
+
+::: incremental
+
+* Scala 2 също позволява добавяне на методи
+* Използва се механизма за implicit конверсия
+* Все още се среща масово в библиотеките за Scala<br />(независимо от версията)
+
+:::
+
+# Extension Methods чрез implicit<br />(стар подход от Scala 2)
+
+```scala
+class EnrichedInt(val n: Int) extends AnyVal:
+  def squared = n * n
+  def **(exp: Double) = math.pow(n, exp)
+
+implicit def intToEnrichedInt(n: Int) = new EnrichedInt(n)
+
+3.squared // 9
+2 ** 3 // 8.0
+```
+
+# Extension Methods чрез implicit<br />(стар подход от Scala 2)
+
+```scala
+implicit class EnrichedInt(val n: Int) extends AnyVal:
+  def squared = n * n
+  def **(exp: Double) = math.pow(n, exp)
+
+3.squared // 9
+2 ** 3 // 8.0
+```
+
+::: { .fragment }
+
+Тук не е нужен `import scala.language.implicitConversions`
+
+:::
+
+# Примери от стандартната библиотека
+
+```scala
+1 -> "One" // (1, "One"), -> се добавя към всички типове
+
+// extension methods се използва за добавяне на методите за колекции върху String
+"abcdef".take(2) // ab
+
+import scala.concurrent.duration.DurationInt
+5.seconds // scala.concurrent.duration.FiniteDuration = 5 seconds
+```
+
+# Opaque Types
 
 ::: incremental
 
@@ -608,54 +772,6 @@ def createAddressRegistration(personId: String, locationId: String) = ???
 ```scala
 createAddressRegistration(locationId, personId) // compiles 😬
 ```
-
-:::
-
-# AnyVal класове
-
-::: incremental
-
-```scala
-final case class PersonId(value: String) extends AnyVal
-final case class LocationId(value: String) extends AnyVal
-
-def createAddressRegistration(person: PersonId, location: LocationId) = ???
-```
-
-```scala
-createAddressRegistration(PersonId("100"), LocationId("5")) // OK
-createAddressRegistration(LocationId("5"), PersonId("100")) // won't compile
-```
-
-:::
-
-# AnyVal класове
-
-```scala
-case class Meter(amount: Double) extends AnyVal:
-  def +(m: Meter): Meter = Meter(amount + m.amount)
-  def *(coefficient: Double): Meter = Meter(coefficient * amount)
-  
-  override def toString = s"$amount meters"
-```
-
-::: { .fragment }
-
-```scala
-case class Circle(radius: Meter):
-  def circumference: Meter = radius * 2 * math.Pi
-
-Circle(Meter(2)).circumference.toString // 12.566370614359172 meters
-```
-
-:::
-
-::: incremental
-
-* В повечето случаи не създават допълнителен обект, вместо това се репрезентират от типа, който обвиват
-* носят повече type safety в някои ситуации
-* обвитата стойност задължително трябва да е `val` в обиващия клас
-* поради JVM ограничения не могат да обвият повече от едно поле
 
 :::
 
@@ -686,32 +802,6 @@ createAddressRegistration(LocationId("5"), PersonId("100")) // won't compile
 * Under the hood it’s still a String at runtime (so it’s “zero allocation” in the way you actually care about).
 * Outside the defining scope, PersonId is not treated as a String. You only expose what you choose (via extensions / methods).
 * No “single-val constructor” limitation because it’s not a class.
-
-:::
-
-# Изброени типове { .scala3 }
-
-```scala
-enum WeekDay:
-  case Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday
-```
-
-::: { .fragment }
-
-```scala
-def isWorkingDay(day: WeekDay) = day != WeekDay.Saturday && day != WeekDay.Sunday
-isWorkingDay(WeekDay.Wednesday) // true, :(
-```
-
-:::
-
-::: { .fragment }
-
-```scala
-WeekDay.valueOf("Monday") // WeekDay.Monday
-
-WeekDay.values // Array(Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday)
-```
 
 :::
 
@@ -980,144 +1070,6 @@ def circumference(s: Shape): Double = s match
 * Функционалният подход е подходящ за типове с предварително фиксирани случаи
 
 :::
-
-# Extension Methods
-
-::: incremental
-
-* Добавяне на методи към съществуващи типове
-* Само в текущия scope
-
-:::
-
-# Extension Methods { .scala3 }
-
-```scala
-extension (n: Int)
-  def squared = n * n
-  def **(exp: Double) = math.pow(n, exp)
-
-3.squared // 9
-2 ** 3 // 8.0
-```
-
-# Extension Methods { .scala3 }
-
-Могат да бъдат overload-вани,<br />import-ват се по името на метода:
-
-```scala
-// file NumberExtensions.scala
-package scalafmi.numberextensions
-
-extension (n: Int)
-  def squared = n * n
-  def **(exp: Double) = math.pow(n, exp)
-
-extension (n: Double)
-  def squared = n * n
-  def **(exp: Double) = math.pow(n, exp)
-```
-
-```scala
-// file Demo.scala
-import scalafmi.numberextensions.{ squared, ** }
-
-3.squared // 9
-2 ** 3 // 8.0
-
-3.14.squared
-2.71 ** 4
-```
-
-# Extension Methods { .scala3 }
-
-```scala
-extension (xs: List[Double])
-  def avg = xs.sum / xs.size
-
-List(1.0, 2.0, 3.0).avg // 2.0
-List("a", "b", "c").avg // грешка, value avg is not a member of List[String]
-```
-
-::: { .fragment }
-
-```scala
-extension [A](xs: List[A])
-  def second = xs.tail.head
-
-List(1.0, 2.0, 3.0).second // 2.0
-List("a", "b", "c").second // b
-```
-:::
-
-# Търсене на extension методи –<br />точно като при implicits
-
-1. В текущия scope (чрез текущ или външен блок или чрез import)
-2. В продружаващия обект на който и да е от участващите типове
-
-# Extension методи в придружаващ обект
-
-```scala
-object Rational:
-  extension (xs: List[Rational])
-    def total: Rational =
-      if xs.isEmpty then 0
-      else xs.head + xs.tail.total
-      
-    def avg: Rational = xs.total / xs.size
-```
-
-# Extension Methods в Scala 2
-
-::: incremental
-
-* Scala 2 също позволява добавяне на методи
-* Използва се механизма за implicit конверсия
-* Все още се среща масово в библиотеките за Scala<br />(независимо от версията)
-
-:::
-
-# Extension Methods чрез implicit<br />(стар подход от Scala 2)
-
-```scala
-class EnrichedInt(val n: Int) extends AnyVal:
-  def squared = n * n
-  def **(exp: Double) = math.pow(n, exp)
-
-implicit def intToEnrichedInt(n: Int) = new EnrichedInt(n)
-
-3.squared // 9
-2 ** 3 // 8.0
-```
-
-# Extension Methods чрез implicit<br />(стар подход от Scala 2)
-
-```scala
-implicit class EnrichedInt(val n: Int) extends AnyVal:
-  def squared = n * n
-  def **(exp: Double) = math.pow(n, exp)
-
-3.squared // 9
-2 ** 3 // 8.0
-```
-
-::: { .fragment }
-
-Тук не е нужен `import scala.language.implicitConversions`
-
-:::
-
-# Примери от стандартната библиотека
-
-```scala
-1 -> "One" // (1, "One"), -> се добавя към всички типове
-
-// extension methods се използва за добавяне на методите за колекции върху String
-"abcdef".take(2) // ab
-
-import scala.concurrent.duration.DurationInt
-5.seconds // scala.concurrent.duration.FiniteDuration = 5 seconds
-```
 
 # ООП дизайн?
 
