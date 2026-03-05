@@ -471,7 +471,6 @@ Try(10)
 
 ```scala
 import scala.util.* // всичко от util пакета
-// import scala.util._ Scala2 синтаксис. Все още работи в Scala3
 
 Try(10)
 Success(10)
@@ -507,18 +506,9 @@ gcd(42, 10)
 ```scala
 import scala.collection.immutable.Set
 import scala.collection.mutable.{ Set as MutableSet } // преименуване
-// import scala.collection.mutable.{ Set => MutableSet } // Scala2
 
 Set(1, 2, 3)
 MutableSet(4, 5, 6)
-```
-
-:::
-
-::: { .fragment }
-
-```conf
-rewrite.scala3.convertToNewSyntax = true
 ```
 
 :::
@@ -923,14 +913,15 @@ def checkLocations(locations: List[String], bird: Bird): List[String] =
 checkLocations(List("Sofia", "Varna"), Eagle("Henry"))
 ```
 
-::: incremental
+::: { .fragment }
 
-* Върху JVM се имплементира чрез reflection, поради което изисква:
+Върху JVM се имплементира чрез reflection, поради което изисква:
 
 ```scala
 import reflect.Selectable.reflectiveSelectable
 ```
-* Ако не искаме да използваме reflection, можем да имплементираме `Selectable` интерфейса
+
+(или да имплементираме свой `Selectable`)
 
 :::
 
