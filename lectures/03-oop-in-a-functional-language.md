@@ -192,7 +192,7 @@ class Interval(a: Int, b: Int, inclusive: Boolean = true):
   require(a <= b)
   
   def apply(n: Int) =
-    if (inclusive) a <= n && n <= b
+    if inclusive then a <= n && n <= b
     else a < n && n < b
 
 val percentageInterval = new Interval(0, 100)
