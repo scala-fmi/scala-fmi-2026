@@ -16,6 +16,23 @@ object OpaqueTypes:
     createAddressRegistration(PersonId("100"), LocationId("5")) // OK
     // createAddressRegistration(LocationId("5"), PersonId("100")) // won't compile
 
+opaque type Meter = Double
+object Meter:
+  def apply(value: Double): Meter = value
+  extension (self: Meter)
+    def value: Double = self
+    def +(that: Meter): Meter = Meter(self + that)
+    def *(coefficient: Double): Meter = Meter(coefficient * self)
+    def show: String = s"$self meters"
+
+object MeterExample:
+  case class Circle(radius: Meter):
+    def circumference: Meter = radius * 2 * math.Pi
+
+  @main def run(): Unit =
+    println:
+      Circle(Meter(2)).circumference.show
+
 opaque type OrderId = String
 
 object OrderId:
