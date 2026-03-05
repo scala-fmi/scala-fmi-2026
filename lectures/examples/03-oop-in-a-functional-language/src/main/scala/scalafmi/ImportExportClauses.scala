@@ -1,6 +1,4 @@
-package com.scalafmi
-
-import scala.util.Try
+package scalafmi
 
 object IntUtils:
   def twice(n: Int): Int = 2 * n

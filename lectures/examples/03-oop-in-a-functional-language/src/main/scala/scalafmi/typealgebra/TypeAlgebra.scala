@@ -1,4 +1,4 @@
-package com.scalafmi.typealgebra
+package scalafmi.typealgebra
 
 trait LovingAnimal:
   def name: String

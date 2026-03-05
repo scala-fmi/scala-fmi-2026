@@ -317,7 +317,7 @@ intToRational(1) + Rational(2, 3)  // Rational(5, 3), също работи
 * През него IntelliJ ни показва също използваните implicit конверсии 
 * Shortcut: натиснете Ctrl (или Cmd на Mac) два пъти и задръжте
 * През него може да се навигира към използваната функция за конверсия
-* От 2024.1 – могат да се включват за постоянно чрез `Ctrl/Cmd + Alt + Shift + X`
+* Могат да се включват за постоянно чрез<br />`Ctrl/Cmd + Alt + Shift + X`
 
 # case класове
 
@@ -714,6 +714,21 @@ object Rational:
     def avg: Rational = xs.total / xs.size
 ```
 
+::: { .fragment }
+
+```scala
+List(
+  Rational(1, 2),
+  Rational(2, 5),
+  Rational(7, 8)
+).total // 71/40
+// тъй като типът е List[Rational] компилаторът търси
+// в придружаващите обекти и на List и на Rational.
+// В случая намира total в обекта Rational
+```
+
+:::
+
 # Extension Methods в Scala 2
 
 ::: incremental
@@ -986,10 +1001,10 @@ def toInteger(value: String | Int | Double): Int = value match
 
 ::: { .fragment }
 
-Превърнете в грешка чрез<br />`-Xfatal-warnings`:
+Превърнете в грешка чрез<br />`-Werror`:
 
 ```scala
-scalacOptions += "-Xfatal-warnings"
+scalacOptions += "-Werror"
 ```
 
 :::
@@ -1146,7 +1161,6 @@ def buyTea(cc: CreditCard): (Tea, Charge) =
 
 :::
 
-# [Таблица на типовите елементи в Scala](https://github.com/scala-fmi/scala-fmi-2024/blob/main/resources/type-elements-in-scala.md)
+# [Таблица на типовите елементи в Scala](https://github.com/scala-fmi/scala-fmi-2026/blob/main/resources/type-elements-in-scala.md)
 
 # Въпроси :)?
-

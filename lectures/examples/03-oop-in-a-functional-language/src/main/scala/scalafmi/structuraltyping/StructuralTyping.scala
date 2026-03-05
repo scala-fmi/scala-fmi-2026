@@ -1,6 +1,6 @@
-package com.scalafmi
+package scalafmi.structuraltyping
 
-import reflect.Selectable.reflectiveSelectable
+import scala.reflect.Selectable.reflectiveSelectable
 
 case class Eagle(name: String):
   def flyThrough(location: String): String =

@@ -1,4 +1,4 @@
-package com.scalafmi.mathematical
+package scalafmi.mathematical
 
 import scala.language.implicitConversions
 
@@ -13,17 +13,10 @@ trait Ordered[A]:
 class Rational(n: Int, d: Int) extends Ordered[Rational]:
   require(d != 0, "Denominator must not be zero")
 
-  // We can put it in some math utility
-  private def gcd(a: Int, b: Int): Int =
-    def nonNegativeGcd(a: Int, b: Int): Int =
-      if b == 0 then a else nonNegativeGcd(b, a % b)
-
-    nonNegativeGcd(a.abs, b.abs)
-
   def compare(that: Rational): Int = (this - that).numer
 
   val (numer, denom) =
-    val div = gcd(n, d)
+    val div = MathUtils.gcd(n, d)
     ((n / div) * d.sign, (d / div).abs)
 
   def unary_- = Rational(-numer, denom)
@@ -74,3 +67,9 @@ object Rational:
   1 + Rational(2, -4)
 
   Rational(2, -4) <= Rational(2, 5)
+
+  List(
+    Rational(1, 2),
+    Rational(2, 5),
+    Rational(7, 8)
+  ).total
