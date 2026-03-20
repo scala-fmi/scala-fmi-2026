@@ -100,10 +100,29 @@
       - UI и front-end (примери с Redux и virtual DOM)
   - Композиция на функции
   - Изразяване чрез типове
+* [05 – Fold и колекции](https://scala-fmi.github.io/scala-fmi-2026/lectures/05-folds-and-collections.html)
+  - Абстракция чрез `fold`, `foldLeft` и `foldRight`. Изразяване на операции чрез тях
+  - Йеархия и дизайн на колекциите в Scala.
+    * Uniform Return Type principle
+    * Колекциите като функции (примери за `Seq`, `Set`, `Map`)
+  - Честични функции. Частични функции чрез `case` блокове
+  - Още операции върху колекции – `partition`, `span`, `splitAt`; `flatten`, `flatMap`, `zip`, `groupBy` и други
+  - Тайната за `for` конструкциите – синтактична захар върху `map`, `flatMap` и `withFilter` (`filter`)
+  - Изразяване на опционалност. `null` като грешка за милиард долара. Имплементация на `Option` тип
+  - `Option` във `for`
+  - Полезни операции върху `Option`.
+  - Type bounds (ограничения върху типовите параметри)
+  - [Вариантност](resources/variance.md). Ковариантност и контравариантност на типове. Вариантност при типовете за функции. [Още примери](https://www.freecodecamp.org/news/understand-scala-variances-building-restaurants/)
+  - Lazy колекции
+    * нестриктни view-та на колекции
+    * lazy списъци с мемоизация
+  - Имплементация на `LazyList`
+
 
 ## Допълнителни ресурси
 
 * [Таблица на елементите, съставящи типовата система на Scala](resources/type-elements-in-scala.md)
+* [Вариантност](resources/variance.md)
 
 ## Генериране на лекции
 
