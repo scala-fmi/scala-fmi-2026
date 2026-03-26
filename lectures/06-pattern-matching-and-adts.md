@@ -489,8 +489,6 @@ def quickSort(xs: List[Int]): List[Int] = xs match
 # Да упражним наученото 🏎️
 
 ---
-title: ADTs (Алгебрични типове данни)
----
 
 # Какво са ADTs?
 
@@ -636,16 +634,7 @@ enum Direction:
 
 **Математическа сложност:** $2^3 = 8$ възможни уникални имплементации.
 
-| Функция № | Резултат при `Some(true)` | Резултат при `Some(false)` | Резултат при `None` | Логическо описание |
-|:----------|:-------------------------:|:--------------------------:|:-------------------:|:-------------------|
-| **1** | `true`                    | `true`                     | `true`              | Постоянна стойност `true` |
-| **2** | `false`                   | `false`                    | `false`             | Постоянна стойност `false` |
-| **3** | `true`                    | `false`                    | `true`              | `opt.getOrElse(true)` |
-| **4** | `true`                    | `false`                    | `false`             | `opt.getOrElse(false)` |
-| **5** | `false`                   | `true`                     | `true`              | `!opt.getOrElse(false)` |
-| **6** | `false`                   | `true`                     | `false`             | `!opt.getOrElse(true)` |
-| **7** | `true`                    | `true`                     | `false`             | `opt.isDefined` |
-| **8** | `false`                   | `false`                    | `true`              | `opt.isEmpty` |
+![](images/06-pattern-matching-and-adts/exponential-complexity-table.png)
 ---
 
 # Hybrid Types
