@@ -593,7 +593,7 @@ enum Direction:
 
 :::
 
-::: incremental
+::: {.fragment}
 
 * Complexity: 4
 
@@ -607,13 +607,14 @@ enum Direction:
 
 :::
 
-::: incremental
+::: {.fragment}
 
 * Complexity: 8
 
 :::
 
-::: incremental
+::: {.fragment}
+
 Функциите имат експоненциална сложност
 
 :::
