@@ -55,13 +55,13 @@ def isPi(value: Double): Boolean = value match
   case _ => false
 ```
 
-```Scala
+```scala
 def isEmptyList[A](list: List[A]): Boolean = list match
   case Nil => true
   case _ => false
 ```
 
-```Scala
+```scala
 enum Color:
   case Red, Green, Blue, Yellow, Orange, Purple
 
@@ -72,7 +72,7 @@ def isPrimaryColor(color: Color): Boolean = color match
   case _ => false
 ```
 
-```Scala
+```scala
 val pesho = "Pesho"
 def isPesho(name: String): Boolean = name match
   case `pesho` => true
@@ -106,7 +106,7 @@ def describe(x: Any): String = x match
 
 # Съставни образци - деструктуриране на наредени n-торки (tuples)
 
-* `(patterh1, pattern2, ..., patternN)`
+* `(pattern1, pattern2, ..., patternN)`
 
 ```scala
 def describeTuple(t: (Int, String)): String = t match
@@ -155,7 +155,7 @@ def describeList[A](list: List[A]): String = list match
 # Съставни образци - колекции
 
 * `Seq(first, second, third)`
-* `Seq(fitst, second, rest*)`
+* `Seq(first, second, rest*)`
 
 ```scala
 def describeSeq[A](seq: Seq[A]): String = seq match
@@ -212,14 +212,23 @@ def isPrimaryColor(color: Color): Boolean = color match
 ::: incremental
 
 * Тези няма да работят:
-  * `case Some(x) | None =>` ...`
+  * `case Some(x) | None => ...`
   * `case Some(x) | Some(y) => ...`
   * `case (x, y, z) | (x, y) => ...`
   * `case a: String | b: Int => ...`
   * `case Circle(r) | Rectangle(w, h) => ...`
-
+* Алтернативните образци трябва да въвеждат едни и същи променливи — със същите имена и в същата структура
 :::
 
+# Съпоставяне на алтернативи - вложени образци
+
+```scala
+def describe(x: Any): String = x match
+  case Some(1 | 2 | 3) => "Small number inside Some"
+  case Some(n @ (4 | 5)) => s"Medium number inside Some: $n"
+  case None => "No value"
+  case _ => "Something else"
+```
 
 
 # If guards при съпоставяне на образци
@@ -283,24 +292,21 @@ def getDayOfWeek(day: Int): String = day match
 
 
 ```scala
-list.map {
+list.map
   case i if i % 2 == 0 => s"Even: $i"
   case i => s"Odd: $i"
-}
 ```
 
 ```scala
-list.collect {
+list.collect
   case i if i % 2 == 0 => s"Even: $i"
   case i if i % 3 == 0 => s"Divisible by 3: $i"
-}
 ```
 
 ```scala
-list.foldLeft(0) {
+list.foldLeft(0)
   case (acc, n) if n % 2 == 0 => acc + n   
   case (acc, _) => acc
-}
 ```
 
 
@@ -373,12 +379,13 @@ try
   doSomethingRisky()
 catch
   case e: NullPointerException => println("Caught a NullPointerException")
-  case e: IllegalArgumentException => println("Caught an IllegalArgumentException")
+  case e @ (_: UnsupportedOperationException | _: IllegalArgumentException) =>
+    println(s"Caught one of two special exceptions: ${e.getMessage}")
   case e: Exception => println(s"Caught a general exception: ${e.getMessage}")
   case NonFatal(e) => println(s"Caught a non-fatal exception: ${e.getMessage}")
 ```
 
-* `NotFatal` е образец, който съвпада с всички изключения, които не са фатални (като `VirtualMachineError`, `InterruptedException`, `OutOfMemoryError`, `StackOverflowError` и други)
+* `NonFatal` е образец, който съвпада с всички изключения, които не са фатални (като `VirtualMachineError`, `InterruptedException`, `OutOfMemoryError`, `StackOverflowError` и други)
 
 
 # Екстрактори
@@ -396,19 +403,22 @@ catch
 * Използва се при фиксиран брой елементи
 
 ```scala
-class Email(username: String, domain: String)
+class URL(protocol: String, domain: String)
 
-object Email:
-  def unapply(email: String): Option[(String, String)] =
-    email.split("@") match
-      case Array(username, domain) => Some((username, domain))
+object URL:
+  def unapply(url: String): Option[(String, String)] =
+    url.split("://", 2) match
+      case Array(protocol, rest) => Some((protocol, rest))
       case _ => None
 
-List("zdravko@gmail.com", "boyan@stemma.@", "viktor@uni-sofia.bg", "vas@sil@abv.bg", 
-  "yahoo.com")
-  .collect {
-    case Email(name, _) => s"$name's email"
-  }
+List(
+  "https://example.com",
+  "ftp://files.server.com",
+  "invalid-url",
+  "http://scala-lang.org"
+)
+.collect:
+  case URL(protocol, domain) => s"Protocol: $protocol, Domain: $domain"
 ```
 
 * Какъв ще е резултатът?
@@ -426,13 +436,18 @@ object CsvRow:
     Some(row.split(",").toSeq)
 
 List("John,Doe,30", "Jane,Smith,25", "InvalidRow", "Alice,Bob")
-  .collect {
-    case CsvRow(first, second, rest @ _*) => s"First: $first, " +
+  .collect
+    case CsvRow(first, second, rest*) => s"First: $first, " +
             s"Second: $second, Rest: ${rest.mkString(";")}"
-  }
 ```
 
-# По-подрбо за pattern matching при List
+```scala
+import scala.util.matching.Regex
+val ISODate = new Regex("""(\d{4})-(\d{2})-(\d{2})""")
+val ISODate(year, month, day) = "2022-04-13"
+```
+
+# По-подробно за pattern matching при List
 
 ```scala
 def quickSort(xs: List[Int]): List[Int] = xs match
