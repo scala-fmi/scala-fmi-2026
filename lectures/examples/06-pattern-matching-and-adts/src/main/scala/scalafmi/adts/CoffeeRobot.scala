@@ -22,7 +22,7 @@ class CoffeeRobot:
     whiskey: Option[Whiskey]
   )
 
-  def prepareIrishCoffee(cream: Cream, whiskey: Whiskey): Unit = ???
+  private def prepareIrishCoffee(cream: Cream, whiskey: Whiskey): Unit = ???
 
   def prepareCoffeeOrder(order: CoffeeOrder): Unit =
     order.coffeeType match
