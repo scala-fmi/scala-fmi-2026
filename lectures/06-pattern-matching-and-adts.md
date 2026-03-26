@@ -762,9 +762,9 @@ sealed trait Card
   case class CreditCard(monthlyLimit: MonthlyLimit) extends Card
   case object DebitCard extends Card
 
-val maybeCard: Option[Card] = for {
+val maybeCard: Option[Card] = for 
   monthlyLimit <- MonthlyLimit(1000)
-} yield CreditCard(monthlyLimit)
+ yield CreditCard(monthlyLimit)
 ```
 
 ---
@@ -774,7 +774,7 @@ val maybeCard: Option[Card] = for {
 ::: incremental
 
 * По-малко тестове: Не е нужно да тествате сценарии, които са невъзможни за достигане
-* Без defensive programming (`if (x != null)` или `if (isInvalid)` проверки)
+* Без defensive programming (`if x != null` или `if isInvalid` проверки)
 * По лесен за разбиране код (self documenting)
 * По малко бъгове
 

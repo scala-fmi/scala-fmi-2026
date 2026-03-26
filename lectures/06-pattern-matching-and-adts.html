@@ -808,9 +808,9 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb48-
 <span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="kw">class</span> <span class="fu">CreditCard</span><span class="op">(</span>monthlyLimit<span class="op">:</span> MonthlyLimit<span class="op">)</span> <span class="kw">extends</span> Card</span>
 <span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="kw">object</span> DebitCard <span class="kw">extends</span> Card</span>
 <span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> maybeCard<span class="op">:</span> <span class="ex">Option</span><span class="op">[</span>Card<span class="op">]</span> <span class="op">=</span> <span class="cf">for</span> <span class="op">{</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> maybeCard<span class="op">:</span> <span class="ex">Option</span><span class="op">[</span>Card<span class="op">]</span> <span class="op">=</span> <span class="cf">for</span> </span>
 <span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>  monthlyLimit <span class="op">&lt;-</span> <span class="fu">MonthlyLimit</span><span class="op">(</span><span class="dv">1000</span><span class="op">)</span></span>
-<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="op">}</span> <span class="cf">yield</span> <span class="fu">CreditCard</span><span class="op">(</span>monthlyLimit<span class="op">)</span></span></code></pre></div>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a> <span class="cf">yield</span> <span class="fu">CreditCard</span><span class="op">(</span>monthlyLimit<span class="op">)</span></span></code></pre></div>
 </section>
 <section id="ползи-от-този-подход" class="slide level1">
 <h1>Ползи от този подход</h1>
@@ -818,8 +818,7 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb48-
 <li class="fragment">По-малко тестове: Не е нужно да тествате сценарии,
 които са невъзможни за достигане</li>
 <li class="fragment">Без defensive programming
-(<code>if (x != null)</code> или <code>if (isInvalid)</code>
-проверки)</li>
+(<code>if x != null</code> или <code>if isInvalid</code> проверки)</li>
 <li class="fragment">По лесен за разбиране код (self documenting)</li>
 <li class="fragment">По малко бъгове</li>
 </ul>
