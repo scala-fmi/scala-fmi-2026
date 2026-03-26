@@ -149,19 +149,26 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb1-1
 <section id="видове-прости-образци---съпоставяне-по-константи"
 class="slide level1">
 <h1>Видове прости образци - съпоставяне по константи</h1>
+<div class="fragment">
 <div class="sourceCode" id="cb3"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">isWeekend</span><span class="op">(</span>day<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">=</span> day <span class="cf">match</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="st">&quot;Saturday&quot;</span> <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="st">&quot;Sunday&quot;</span> <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> _ <span class="op">=&gt;</span> <span class="kw">false</span></span></code></pre></div>
+</div>
+<div class="fragment">
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">isPi</span><span class="op">(</span>value<span class="op">:</span> <span class="dt">Double</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">=</span> value <span class="cf">match</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> math<span class="op">.</span>Pi <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> _ <span class="op">=&gt;</span> <span class="kw">false</span></span></code></pre></div>
+</div>
+<div class="fragment">
 <div class="sourceCode" id="cb5"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> isEmptyList<span class="op">[</span>A<span class="op">](</span>list<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>A<span class="op">]):</span> <span class="dt">Boolean</span> <span class="op">=</span> list <span class="cf">match</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Nil <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> _ <span class="op">=&gt;</span> <span class="kw">false</span></span></code></pre></div>
+</div>
+<div class="fragment">
 <div class="sourceCode" id="cb6"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>enum <span class="ex">Color</span><span class="op">:</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Red<span class="op">,</span> Green<span class="op">,</span> Blue<span class="op">,</span> Yellow<span class="op">,</span> Orange<span class="op">,</span> Purple</span>
@@ -171,11 +178,14 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb6-1
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Color</span><span class="op">.</span>Green <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="ex">Color</span><span class="op">.</span>Blue <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> _ <span class="op">=&gt;</span> <span class="kw">false</span></span></code></pre></div>
+</div>
+<div class="fragment">
 <div class="sourceCode" id="cb7"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> pesho <span class="op">=</span> <span class="st">&quot;Pesho&quot;</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="fu">isPesho</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">):</span> <span class="dt">Boolean</span> <span class="op">=</span> name <span class="cf">match</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> `pesho` <span class="op">=&gt;</span> <span class="kw">true</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> _ <span class="op">=&gt;</span> <span class="kw">false</span></span></code></pre></div>
+</div>
 </section>
 <section id="видове-прости-образци---съпоставяне-по-типове"
 class="slide level1">
@@ -272,7 +282,7 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb13-
 class="slide level1">
 <h1>Съставни образци - наследяване на класове</h1>
 <div class="sourceCode" id="cb14"><pre
-class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> <span class="ex">Shape</span></span>
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">sealed</span> <span class="kw">trait</span> <span class="ex">Shape</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>radius<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="ex">Rectangle</span><span class="op">(</span>width<span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> height<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
 <span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -283,7 +293,7 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb14-
 <section id="комбинация-от-име-и-съставен-образец" class="slide level1">
 <h1>Комбинация от име и съставен образец</h1>
 <div class="sourceCode" id="cb15"><pre
-class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> <span class="ex">Shape</span></span>
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">sealed</span> <span class="kw">trait</span> <span class="ex">Shape</span></span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Circle</span><span class="op">(</span>radius<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="ex">Rectangle</span><span class="op">(</span>width<span class="op">:</span> <span class="dt">Double</span><span class="op">,</span> height<span class="op">:</span> <span class="dt">Double</span><span class="op">)</span> <span class="kw">extends</span> <span class="ex">Shape</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
@@ -310,17 +320,16 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb16-
 <ul>
 <li>Оператор <code>|</code> ни позволява да съпоставяме няколко
 алтернативни образeца в един <code>case</code></li>
+<li>Тези няма да работят:
+<ul>
+<li><code>case Some(x) | None =&gt; ...</code></li>
+<li><code>case Some(x) | Some(y) =&gt; ...</code></li>
+<li><code>case (x, y, z) | (x, y) =&gt; ...</code></li>
+<li><code>case a: String | b: Int =&gt; ...</code></li>
+<li><code>case Circle(r) | Rectangle(w, h) =&gt; ...</code></li>
+</ul></li>
 </ul>
 <ul>
-<li class="fragment">Тези няма да работят:
-<ul>
-<li class="fragment"><code>case Some(x) | None =&gt; ...</code></li>
-<li class="fragment"><code>case Some(x) | Some(y) =&gt; ...</code></li>
-<li class="fragment"><code>case (x, y, z) | (x, y) =&gt; ...</code></li>
-<li class="fragment"><code>case a: String | b: Int =&gt; ...</code></li>
-<li
-class="fragment"><code>case Circle(r) | Rectangle(w, h) =&gt; ...</code></li>
-</ul></li>
 <li class="fragment">Алтернативните образци трябва да въвеждат едни и
 същи променливи — със същите имена и в същата структура</li>
 </ul>
@@ -414,33 +423,33 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb23-
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="op">(</span>acc<span class="op">,</span> n<span class="op">)</span> <span class="cf">if</span> n <span class="op">%</span> <span class="dv">2</span> <span class="op">==</span> <span class="dv">0</span> <span class="op">=&gt;</span> acc <span class="op">+</span> n   </span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="op">(</span>acc<span class="op">,</span> _<span class="op">)</span> <span class="op">=&gt;</span> acc</span></code></pre></div>
 </section>
-<section id="приложения---при-дефиниране-на-val" class="slide level1">
-<h1>Приложения - при дефиниране на val</h1>
-<div class="sourceCode" id="cb24"><pre
-class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Person</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">,</span> age<span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> city<span class="op">:</span> <span class="ex">String</span><span class="op">)</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="op">(</span>first<span class="op">,</span> second<span class="op">)</span> <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">&quot;hello&quot;</span><span class="op">)</span></span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> person @ <span class="fu">Person</span><span class="op">(</span>name<span class="op">,</span> age<span class="op">,</span> city<span class="op">)</span> <span class="op">=</span> <span class="fu">Person</span><span class="op">(</span><span class="st">&quot;Pesho&quot;</span><span class="op">,</span> <span class="dv">24</span><span class="op">,</span> <span class="st">&quot;Varna&quot;</span><span class="op">)</span></span></code></pre></div>
-<ul>
-<li>Какво ще стане тук?</li>
-</ul>
-<div class="sourceCode" id="cb25"><pre
-class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> first <span class="op">::</span> second <span class="op">::</span> rest <span class="op">=</span> <span class="ex">List</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span></code></pre></div>
-</section>
 <section id="приложения---при-дефиниране-на-функции"
 class="slide level1">
 <h1>Приложения - при дефиниране на функции</h1>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="kw">sealed</span> <span class="kw">trait</span> Command</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Move</span><span class="op">(</span>x<span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> y<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="kw">extends</span> Command</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">object</span> Stop <span class="kw">extends</span> Command</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Speak</span><span class="op">(</span>message<span class="op">:</span> <span class="ex">String</span><span class="op">)</span> <span class="kw">extends</span> Command</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> executeCommand<span class="op">:</span> Command <span class="op">=&gt;</span> <span class="dt">Unit</span> <span class="op">=</span> </span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Move</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="st">&quot;Staying in place&quot;</span><span class="op">)</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Move</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="ss">s&quot;</span><span class="st">Moving to (</span><span class="ss">$x</span><span class="st">, </span><span class="ss">$y</span><span class="st">)</span><span class="ss">&quot;</span><span class="op">)</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Stop <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="st">&quot;Stopping&quot;</span><span class="op">)</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Speak</span><span class="op">(</span>message<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="ss">s&quot;</span><span class="st">Speaking: </span><span class="ss">$message&quot;</span><span class="op">)</span></span></code></pre></div>
+</section>
+<section id="приложения---при-дефиниране-на-val" class="slide level1">
+<h1>Приложения - при дефиниране на val</h1>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Person</span><span class="op">(</span>name<span class="op">:</span> <span class="ex">String</span><span class="op">,</span> age<span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> city<span class="op">:</span> <span class="ex">String</span><span class="op">)</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="op">(</span>first<span class="op">,</span> second<span class="op">)</span> <span class="op">=</span> <span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="st">&quot;hello&quot;</span><span class="op">)</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> person @ <span class="fu">Person</span><span class="op">(</span>name<span class="op">,</span> age<span class="op">,</span> city<span class="op">)</span> <span class="op">=</span> <span class="fu">Person</span><span class="op">(</span><span class="st">&quot;Pesho&quot;</span><span class="op">,</span> <span class="dv">24</span><span class="op">,</span> <span class="st">&quot;Varna&quot;</span><span class="op">)</span></span></code></pre></div>
+<ul>
+<li>Какво ще стане тук?</li>
+</ul>
 <div class="sourceCode" id="cb26"><pre
-class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">sealed</span> <span class="kw">trait</span> Command</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Move</span><span class="op">(</span>x<span class="op">:</span> <span class="dt">Int</span><span class="op">,</span> y<span class="op">:</span> <span class="dt">Int</span><span class="op">)</span> <span class="kw">extends</span> Command</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">object</span> Stop <span class="kw">extends</span> Command</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="cf">case</span> <span class="kw">class</span> <span class="fu">Speak</span><span class="op">(</span>message<span class="op">:</span> <span class="ex">String</span><span class="op">)</span> <span class="kw">extends</span> Command</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> executeCommand<span class="op">:</span> Command <span class="op">=&gt;</span> <span class="dt">Unit</span> <span class="op">=</span> </span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Move</span><span class="op">(</span><span class="dv">0</span><span class="op">,</span> <span class="dv">0</span><span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="st">&quot;Staying in place&quot;</span><span class="op">)</span></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Move</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="ss">s&quot;</span><span class="st">Moving to (</span><span class="ss">$x</span><span class="st">, </span><span class="ss">$y</span><span class="st">)</span><span class="ss">&quot;</span><span class="op">)</span></span>
-<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> Stop <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="st">&quot;Stopping&quot;</span><span class="op">)</span></span>
-<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="fu">Speak</span><span class="op">(</span>message<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">println</span><span class="op">(</span><span class="ss">s&quot;</span><span class="st">Speaking: </span><span class="ss">$message&quot;</span><span class="op">)</span></span></code></pre></div>
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> first <span class="op">::</span> second <span class="op">::</span> rest <span class="op">=</span> <span class="ex">List</span><span class="op">(</span><span class="dv">1</span><span class="op">)</span></span></code></pre></div>
 </section>
 <section id="приложения---при-for-comprehension" class="slide level1">
 <h1>Приложения - при for comprehension</h1>
@@ -537,6 +546,7 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb30-
 <ul>
 <li>Използва се при променлив брой елементи</li>
 </ul>
+<div class="fragment">
 <div class="sourceCode" id="cb31"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> <span class="fu">CsvRow</span><span class="op">(</span>values<span class="op">:</span> <span class="ex">String</span><span class="op">*)</span></span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -548,10 +558,13 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb31-
 <span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>  <span class="op">.</span>collect</span>
 <span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">case</span> <span class="fu">CsvRow</span><span class="op">(</span>first<span class="op">,</span> second<span class="op">,</span> rest<span class="op">*)</span> <span class="op">=&gt;</span> <span class="ss">s&quot;</span><span class="st">First: </span><span class="ss">$first</span><span class="st">, </span><span class="ss">&quot;</span> <span class="op">+</span></span>
 <span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>            <span class="ss">s&quot;</span><span class="st">Second: </span><span class="ss">$second</span><span class="st">, Rest: </span><span class="ss">${</span>rest<span class="op">.</span><span class="fu">mkString</span><span class="op">(</span><span class="st">&quot;;&quot;</span><span class="op">)</span><span class="ss">}&quot;</span></span></code></pre></div>
+</div>
+<div class="fragment">
 <div class="sourceCode" id="cb32"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> scala<span class="op">.</span>util<span class="op">.</span>matching<span class="op">.</span>Regex</span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> ISODate <span class="op">=</span> <span class="kw">new</span> <span class="fu">Regex</span><span class="op">(</span><span class="st">&quot;&quot;&quot;(</span><span class="er">\d</span><span class="st">{4})-(</span><span class="er">\d</span><span class="st">{2})-(</span><span class="er">\d</span><span class="st">{2})&quot;&quot;&quot;</span><span class="op">)</span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> <span class="fu">ISODate</span><span class="op">(</span>year<span class="op">,</span> month<span class="op">,</span> day<span class="op">)</span> <span class="op">=</span> <span class="st">&quot;2022-04-13&quot;</span></span></code></pre></div>
+</div>
 </section>
 <section id="по-подробно-за-pattern-matching-при-list"
 class="slide level1">

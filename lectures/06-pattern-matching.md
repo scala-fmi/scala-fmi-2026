@@ -42,6 +42,8 @@ def getDayOfWeek(day: Int): String = day match
 
 # Видове прости образци - съпоставяне по константи
 
+::: { .fragment }
+
 ```scala
 def isWeekend(day: String): Boolean = day match
   case "Saturday" => true
@@ -49,17 +51,29 @@ def isWeekend(day: String): Boolean = day match
   case _ => false
 ```
 
+:::
+
+::: { .fragment }
+
 ```scala
 def isPi(value: Double): Boolean = value match
   case math.Pi => true
   case _ => false
 ```
 
+:::
+
+::: { .fragment }
+
 ```scala
 def isEmptyList[A](list: List[A]): Boolean = list match
   case Nil => true
   case _ => false
 ```
+
+:::
+
+::: { .fragment }
 
 ```scala
 enum Color:
@@ -72,12 +86,18 @@ def isPrimaryColor(color: Color): Boolean = color match
   case _ => false
 ```
 
+:::
+
+::: { .fragment }
+
 ```scala
 val pesho = "Pesho"
 def isPesho(name: String): Boolean = name match
   case `pesho` => true
   case _ => false
 ```
+
+:::
 
 # Видове прости образци - съпоставяне по типове 
 
@@ -169,7 +189,7 @@ def describeSeq[A](seq: Seq[A]): String = seq match
 # Съставни образци - наследяване на класове
 
 ```scala
-trait Shape
+sealed trait Shape
 case class Circle(radius: Double) extends Shape
 case class Rectangle(width: Double, height: Double) extends Shape
 
@@ -182,7 +202,7 @@ def describeShape(shape: Shape): String = shape match
 # Комбинация от име и съставен образец
 
 ```scala
-trait Shape
+sealed trait Shape
 case class Circle(radius: Double) extends Shape
 case class Rectangle(width: Double, height: Double) extends Shape
 
@@ -208,15 +228,15 @@ def isPrimaryColor(color: Color): Boolean = color match
 ```
 
 * Оператор `|` ни позволява да съпоставяме няколко алтернативни образeца в един `case`
-
-::: incremental
-
 * Тези няма да работят:
   * `case Some(x) | None => ...`
   * `case Some(x) | Some(y) => ...`
   * `case (x, y, z) | (x, y) => ...`
   * `case a: String | b: Int => ...`
   * `case Circle(r) | Rectangle(w, h) => ...`
+
+::: incremental
+
 * Алтернативните образци трябва да въвеждат едни и същи променливи — със същите имена и в същата структура
 :::
 
@@ -310,21 +330,6 @@ list.foldLeft(0)
 ```
 
 
-# Приложения - при дефиниране на val 
-
-```scala
-case class Person(name: String, age: Int, city: String)
-
-val (first, second) = (1, "hello")
-val person @ Person(name, age, city) = Person("Pesho", 24, "Varna")
-```
-
-* Какво ще стане тук?
-
-```scala
-val first :: second :: rest = List(1)
-```
-
 # Приложения - при дефиниране на функции
 
 ```scala
@@ -338,6 +343,22 @@ def executeCommand: Command => Unit =
   case Move(x, y) => println(s"Moving to ($x, $y)")
   case Stop => println("Stopping")
   case Speak(message) => println(s"Speaking: $message")
+```
+
+
+# Приложения - при дефиниране на val 
+
+```scala
+case class Person(name: String, age: Int, city: String)
+
+val (first, second) = (1, "hello")
+val person @ Person(name, age, city) = Person("Pesho", 24, "Varna")
+```
+
+* Какво ще стане тук?
+
+```scala
+val first :: second :: rest = List(1)
 ```
 
 # Приложения - при for comprehension
@@ -428,6 +449,8 @@ List(
 
 * Използва се при променлив брой елементи
 
+::: { .fragment }
+
 ```scala
 class CsvRow(values: String*)
 
@@ -441,11 +464,17 @@ List("John,Doe,30", "Jane,Smith,25", "InvalidRow", "Alice,Bob")
             s"Second: $second, Rest: ${rest.mkString(";")}"
 ```
 
+:::
+
+::: { .fragment }
+
 ```scala
 import scala.util.matching.Regex
 val ISODate = new Regex("""(\d{4})-(\d{2})-(\d{2})""")
 val ISODate(year, month, day) = "2022-04-13"
 ```
+
+:::
 
 # По-подробно за pattern matching при List
 
