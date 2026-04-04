@@ -5,34 +5,35 @@ package scalafmi
 
 // no need to implement prepareIrishCoffee or methods for other coffee types
 
-class CoffeeRobot:
-  type Milk = String
-  type Gelato = String
-  type Cream = String
-  type Whiskey = String
+type Milk = String
+type Gelato = String
+type Cream = String
+type Whiskey = String
 
-  enum CoffeeType:
-    case Cappuccino, Espresso, Latte, Affogato, IrishCoffee
+sealed trait CoffeeOrder
+case class Cappuccino(milk: Milk)  extends CoffeeOrder
+case object Espresso extends CoffeeOrder
+case class Latte(milk: Milk) extends CoffeeOrder
+case class Affogato(gelato: Gelato) extends CoffeeOrder
+case class IrishCoffee private(whiskey: Whiskey, cream: Cream) extends CoffeeOrder
+  
+object IrishCoffee:
+  def apply(whiskey: Whiskey, cream: Cream): Option[IrishCoffee] =
+    if whiskey.length > 5 then Some(new IrishCoffee(whiskey, cream))
+    else None
 
-  case class CoffeeOrder(
-    coffeeType: CoffeeType,
-    milk: Option[Milk],
-    gelato: Option[Gelato],
-    cream: Option[Cream],
-    whiskey: Option[Whiskey]
-  )
+private def prepareIrishCoffee(cream: Cream, whiskey: Whiskey): Unit = ???
 
-  private def prepareIrishCoffee(cream: Cream, whiskey: Whiskey): Unit = ???
-
-  def prepareCoffeeOrder(order: CoffeeOrder): Unit =
-    order.coffeeType match
-      case CoffeeType.IrishCoffee =>
-        //Unreachable state but check just in case
-        if order.cream.isEmpty then throw IllegalStateException("No cream")
-        if order.whiskey.isEmpty then throw IllegalStateException("No whiskey")
-
-        prepareIrishCoffee(order.cream.get, order.whiskey.get)
-      case _ => ()
+def prepareCoffeeOrder(order: CoffeeOrder): Unit =
+  order match
+    case IrishCoffee(whiskey, cream) =>
+      prepareIrishCoffee(cream, whiskey)
+    case _ => ()
 
 
 
+@main def test = {
+  val coffeOrder = IrishCoffee("chivas regal", "heavy cream");
+
+  coffeOrder.map(ic => prepareCoffeeOrder(ic))
+}

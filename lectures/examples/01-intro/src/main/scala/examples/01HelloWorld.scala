@@ -1,3 +1,3 @@
 package examples
 
-@main def hello = println("Hello FP World!")
+@main def hello = println("Hello, FP World!")

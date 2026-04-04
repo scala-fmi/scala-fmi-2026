@@ -13,9 +13,7 @@
     .reveal .sourceCode {  /* see #7635 */
       overflow: visible;
     }
-    /* Default styles provided by pandoc.
-    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
-    */
+    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -840,8 +838,41 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb49-
 <span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> DebitCard <span class="op">=&gt;</span> <span class="op">???</span></span>
 <span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>  <span class="co">//inexhaustive match</span></span></code></pre></div>
 </section>
-<section class="slide level1">
-
+<section id="adts" class="slide level1">
+<h1>ADTs</h1>
+<ul>
+<li>Правят некоректните състояние невъзможно за репрезентиране</li>
+<li>Гарантират, че кодът ще покрие всички случаи</li>
+<li>Гарантират, че кодът ще покрие само възможните случаи</li>
+</ul>
+</section>
+<section id="section-1" class="slide level1">
+<h1></h1>
+<p><a href="https://www.youtube.com/watch?v=PSh7JUfDstE">Make Illegal
+States Unrepresentable</a></p>
+<p><a
+href="https://ncreep.github.io/illegal-states/presentation/presentation.html#1">Слайдове</a></p>
+<p><a
+href="https://ncreep.github.io/illegal-states/presentation/presentation.html#56">Комбинирани
+умни конструктори</a></p>
+</section>
+<section id="generalised-algebraic-data-types" class="slide level1">
+<h1>Generalised Algebraic Data Types</h1>
+<p>Типизирано ADT, при което някои product типовете са дефинирани само
+за специфични типове</p>
+</section>
+<section id="section-2" class="slide level1">
+<h1></h1>
+<p><a href="https://www.youtube.com/watch?v=aSS-CIe_V0g">Nicolas
+Rinaudo: Far more than you’ve ever wanted to know about ADTs</a></p>
+</section>
+<section id="рефинирани-типове" class="slide level1">
+<h1>Рефинирани типове</h1>
+<p>Библиотеки: <a href="https://github.com/Iltotore/iron">Iron</a>, <a
+href="https://github.com/kitlangton/neotype">neotype</a></p>
+</section>
+<section id="въпроси" class="slide level1">
+<h1>Въпроси :)?</h1>
 </section>
     </div>
   </div>

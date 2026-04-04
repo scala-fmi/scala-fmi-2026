@@ -482,8 +482,12 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb40-
 <h1>Вариантност</h1>
 <div class="sourceCode" id="cb41"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> apples<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>Apple<span class="op">]</span> <span class="op">=</span> <span class="ex">List</span><span class="op">(</span><span class="fu">Apple</span><span class="op">(</span><span class="st">&quot;red&quot;</span><span class="op">,</span> <span class="dv">2</span><span class="op">),</span> <span class="fu">Apple</span><span class="op">(</span><span class="st">&quot;green&quot;</span><span class="op">,</span> <span class="dv">5</span><span class="op">),</span> <span class="fu">Apple</span><span class="op">(</span><span class="st">&quot;yellow&quot;</span><span class="op">,</span> <span class="dv">3</span><span class="op">))</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="co">// ще се компилира ли следващия ред? </span></span>
-<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> fruits<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>Fruit<span class="op">]</span> <span class="op">=</span> apples</span></code></pre></div>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="co">// това е очаквано</span></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> applesSeq <span class="op">=</span> <span class="bu">Seq</span><span class="op">[</span>Apple<span class="op">]</span> <span class="op">=</span> apples</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="co">// но ще се компилира ли следния код?</span></span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> fruits<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>Fruit<span class="op">]</span> <span class="op">=</span> apples</span></code></pre></div>
 </section>
 <section id="non-strict-и-lazy-изчисления" class="slide level1">
 <h1>Non-strict и lazy изчисления</h1>
@@ -527,6 +531,154 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb44-
 </section>
 <section id="имплементиране-на-lazylist" class="slide level1">
 <h1>Имплементиране на LazyList</h1>
+</section>
+<section id="option-методи-пред-pattern-matching" class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="op">()</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">foo</span><span class="op">(</span>x<span class="op">)</span></span></code></pre></div>
+<div class="fragment">
+<p><a
+href="https://www.scala-lang.org/api/current/scala/Option.html">Option
+API</a></p>
+</div>
+<div class="fragment">
+<p>Тип: <code>Unit</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">foreach</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-1"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> Nil</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> x <span class="op">::</span> Nil</span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>List[?]</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span>toList</span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-2"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="kw">false</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>_<span class="op">)</span> <span class="op">=&gt;</span> <span class="kw">true</span></span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Boolean</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span>isDefined</span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-3"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="kw">true</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">foo</span><span class="op">(</span>x<span class="op">)</span></span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Boolean</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">forall</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-4"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="bu">None</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> <span class="bu">Some</span><span class="op">(</span><span class="fu">foo</span><span class="op">(</span>x<span class="op">))</span></span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Option</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">map</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-5"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb55"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="bu">None</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">foo</span><span class="op">(</span>x<span class="op">)</span></span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Option</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">flatMap</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-6"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb57"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> <span class="bu">None</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> x</span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Option</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span>flatten</span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-7"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb59"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> foo</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span></span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>Option</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">orElse</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="option-методи-пред-pattern-matching-8"
+class="slide level1">
+<h1>Option – методи пред pattern matching</h1>
+<div class="sourceCode" id="cb61"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>option <span class="cf">match</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">None</span> <span class="op">=&gt;</span> foo</span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="bu">Some</span><span class="op">(</span>x<span class="op">)</span> <span class="op">=&gt;</span> x</span></code></pre></div>
+<div class="fragment">
+<p>Тип: <code>type of foo | x</code></p>
+</div>
+<div class="fragment">
+<p>Еквивалент:</p>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>option<span class="op">.</span><span class="fu">getOrElse</span><span class="op">(</span>foo<span class="op">)</span></span></code></pre></div>
+</div>
 </section>
 <section id="въпроси" class="slide level1">
 <h1>Въпроси :)?</h1>

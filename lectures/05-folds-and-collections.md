@@ -490,7 +490,11 @@ list
 
 ```scala
 val apples: List[Apple] = List(Apple("red", 2), Apple("green", 5), Apple("yellow", 3))
-// ще се компилира ли следващия ред? 
+
+// това е очаквано
+val applesSeq = Seq[Apple] = apples
+
+// но ще се компилира ли следния код?
 val fruits: List[Fruit] = apples
 ```
 
@@ -537,5 +541,218 @@ fibs.take(5)
 ```
 
 # Имплементиране на LazyList
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => ()
+  case Some(x) => foo(x)
+```
+
+::: { .fragment }
+
+[Option API](https://www.scala-lang.org/api/current/scala/Option.html)
+
+:::
+
+::: { .fragment }
+
+Тип: `Unit`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.foreach(foo)
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => Nil
+  case Some(x) => x :: Nil
+```
+
+::: { .fragment }
+
+Тип: `List[?]`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.toList
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => false
+  case Some(_) => true
+```
+
+::: { .fragment }
+
+Тип: `Boolean`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.isDefined
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => true
+  case Some(x) => foo(x)
+```
+
+::: { .fragment }
+
+Тип: `Boolean`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.forall(foo)
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => None
+  case Some(x) => Some(foo(x))
+```
+
+::: { .fragment }
+
+Тип: `Option`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.map(foo)
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => None
+  case Some(x) => foo(x)
+```
+
+::: { .fragment }
+
+Тип: `Option`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.flatMap(foo)
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => None
+  case Some(x) => x
+```
+
+::: { .fragment }
+
+Тип: `Option`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.flatten
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => foo
+  case Some(x) => Some(x)
+```
+
+::: { .fragment }
+
+Тип: `Option`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.orElse(foo)
+```
+
+:::
+
+# Option – методи пред pattern matching
+
+```scala
+option match
+  case None => foo
+  case Some(x) => x
+```
+
+::: { .fragment }
+
+Тип: `type of foo | x`
+
+:::
+
+::: { .fragment }
+
+Еквивалент:
+```scala
+option.getOrElse(foo)
+```
+
+:::
 
 # Въпроси :)?

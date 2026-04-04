@@ -27,7 +27,7 @@ sealed trait Option[+A]:
   def withFilter(p: A => Boolean): Option[A] = filter(p)
 
 case class Some[A](a: A) extends Option[A]
-object None extends Option[Nothing]
+case object None extends Option[Nothing]
 
 object Option:
   def apply[A](a: A): Option[A] = Some(a)

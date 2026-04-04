@@ -746,7 +746,7 @@ class EnrichedInt(val n: Int) extends AnyVal:
   def squared = n * n
   def **(exp: Double) = math.pow(n, exp)
 
-implicit def intToEnrichedInt(n: Int) = new EnrichedInt(n)
+implicit def intToEnrichedInt(n: Int): EnrichedInt = new EnrichedInt(n)
 
 3.squared // 9
 2 ** 3 // 8.0
@@ -780,6 +780,24 @@ implicit class EnrichedInt(val n: Int) extends AnyVal:
 import scala.concurrent.duration.DurationInt
 5.seconds // scala.concurrent.duration.FiniteDuration = 5 seconds
 ```
+
+# DSL за тестове
+
+```scala
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
+
+class ExampleSpec extends AnyFlatSpec with Matchers:
+  "+" should "sum two numbers" in {
+    2 + 3 shouldEqual 5
+  }
+```
+
+::: { .fragment }
+
+[ScalaTest стилове](https://www.scalatest.org/user_guide/selecting_a_style)
+
+:::
 
 # Когато типът е твърде общ?
 
@@ -1148,18 +1166,26 @@ def buyTea(cc: CreditCard): (Tea, Charge) =
 
 Отлагане на страничния ефект =>
 
+:::
+
 ::: incremental
 
 * скрити домейн концепции изплуват на яве (`Charge` обект)
 * моделираме дейности като данни
 * които допълнително можем да трансформираме функционално
   - купуване на n кафета и събиране на Charge-ове
+    ```scala
+    def buyTeas(cc: CreditCard, amount: Int): (List[Tea], Charge) = ???
+    ```
   - анализ на Charge-ове от различни потребители
 * по-добра тестваемост
 
 :::
 
-:::
+# Domain-Driven Design
+
+[![](images/03-oop-in-a-functional-language/learning-ddd)](https://www.oreilly.com/library/view/learning-domain-driven-design/9781098100124/)
+[![](images/03-oop-in-a-functional-language/ddd.jpg)](https://www.informit.com/store/domain-driven-design-tackling-complexity-in-the-heart-9780321125217)
 
 # [Таблица на типовите елементи в Scala](https://github.com/scala-fmi/scala-fmi-2026/blob/main/resources/type-elements-in-scala.md)
 

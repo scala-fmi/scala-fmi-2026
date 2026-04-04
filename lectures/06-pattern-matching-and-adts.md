@@ -796,3 +796,32 @@ def sendCard(card: Card): Unit = card match
 ```
 
 ---
+
+# ADTs
+
+* Правят некоректните състояние невъзможно за репрезентиране
+* Гарантират, че кодът ще покрие всички случаи
+* Гарантират, че кодът ще покрие само възможните случаи
+
+
+#
+
+[Make Illegal States Unrepresentable](https://www.youtube.com/watch?v=PSh7JUfDstE)
+
+[Слайдове](https://ncreep.github.io/illegal-states/presentation/presentation.html#1)
+
+[Комбинирани умни конструктори](https://ncreep.github.io/illegal-states/presentation/presentation.html#56)
+
+# Generalised Algebraic Data Types
+
+Типизирано ADT, при което някои product типовете са дефинирани само за специфични типове
+
+#
+
+[Nicolas Rinaudo: Far more than you've ever wanted to know about ADTs](https://www.youtube.com/watch?v=aSS-CIe_V0g)
+
+# Рефинирани типове
+
+Библиотеки: [Iron](https://github.com/Iltotore/iron), [neotype](https://github.com/kitlangton/neotype)
+
+# Въпроси :)?
