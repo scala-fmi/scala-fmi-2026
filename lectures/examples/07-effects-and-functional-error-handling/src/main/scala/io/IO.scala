@@ -1,13 +1,23 @@
 package io
 
+import scala.annotation.tailrec
 import scala.io.StdIn
+
+// associativity:
+// (a + b) + c == a + (b + c)
+//
+// FlatMap(FlatMap(io, f), g)
+// ==
+// FlatMap(io, a => FlatMap(f(a), g))
+
+// Option(x).flatMap(f).flatMap(g)
+// ==
+// Option(x).flatMap(x => f(x).flatMap(g))
 
 enum IO[+A]:
   case Pure(a: A)
   case Delayed(delayedValue: () => A)
   case FlatMap[A, B](ioA: IO[A], f: A => IO[B]) extends IO[B]
-  case Println(str: String) extends IO[Unit]
-  case Readln extends IO[String]
 
   def map[B](f: A => B): IO[B] = flatMap(a => IO.of(f(a)))
   def flatMap[B](f: A => IO[B]): IO[B] = FlatMap(this, f)
@@ -15,19 +25,21 @@ enum IO[+A]:
   def >>=[B](f: A => IO[B]): IO[B] = flatMap(f)
   def >>[B](continuation: => IO[B]): IO[B] = flatMap(_ => continuation)
 
-  def unsafeRun(): A = this match
+  @tailrec
+  final def unsafeRun(): A = this match
     case IO.Pure(a) => a
     case IO.Delayed(delayedValue) => delayedValue()
-    case IO.Println(str) => println(str)
-    case IO.Readln => StdIn.readLine()
-    case IO.FlatMap(io, f) => f(io.unsafeRun()).unsafeRun()
+    case IO.FlatMap(IO.Pure(prevA), f) => f(prevA).unsafeRun()
+    case IO.FlatMap(Delayed(prevDelayedValue), f) => f(prevDelayedValue()).unsafeRun()
+    case IO.FlatMap(FlatMap(prevIO, prevF), f) =>
+      FlatMap(prevIO, prevA => FlatMap(prevF(prevA), f)).unsafeRun()
 
 object IO:
   def apply[A](a: => A): IO[A] = IO.Delayed(() => a)
   def of[A](a: A): IO[A] = IO.Pure(a)
 
-  def println(str: String): IO[Unit] = IO.Println(str)
-  def readln: IO[String] = IO.Readln
+  def println(str: String): IO[Unit] = IO(Predef.println(str))
+  def readln: IO[String] = IO(StdIn.readLine())
 
 @main
 def testIO(): Unit =
@@ -37,8 +49,8 @@ def testIO(): Unit =
 
   val l2 = List(IO.println("Hello World"), IO.println("Hello World"))
 
-//  l1.foreach(_.unsafeRun())
-//  l2.foreach(_.unsafeRun())
+  l1.foreach(_.unsafeRun())
+  l2.foreach(_.unsafeRun())
 
   val program = for
     _ <- IO.println("Hello!!! What's your name:")
@@ -80,14 +92,3 @@ def testIO(): Unit =
 // * Scheduling and retrying
 // * Test and production instances
 // * Different frontends
-
-// associativity:
-// (a + b) + c == a + (b + c)
-//
-// FlatMap(FlatMap(io, f), g)
-// ==
-// FlatMap(io, a => FlatMap(f(a), g))
-
-// Option(x).flatMap(f).flatMap(g)
-// ==
-// Option(x).flatMap(x => f(x).flatMap(g))
