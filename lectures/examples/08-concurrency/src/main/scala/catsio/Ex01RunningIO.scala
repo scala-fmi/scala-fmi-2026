@@ -2,7 +2,6 @@ package catsio
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import cats.syntax.parallel.*
 import cats.syntax.all.*
 
 import scala.concurrent.duration.DurationInt

@@ -1,7 +1,6 @@
 package http
 
 import cats.effect.{IO, IOApp}
-import cats.syntax.all.*
 import com.comcast.ip4s.{ipv4, port}
 import org.http4s.HttpRoutes
 import org.http4s.dsl.io.*

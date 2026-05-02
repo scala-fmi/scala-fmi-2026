@@ -23,9 +23,8 @@ object Callbacks:
     def callback(newBook: Product): Unit =
       maybeFirstBook.get() match
         case Some(firstBook) => onComplete(firstBook, newBook)
-        case None => 
-          if !maybeFirstBook.compareAndSet(None, Some(newBook)) then
-            callback(newBook)
+        case None =>
+          if !maybeFirstBook.compareAndSet(None, Some(newBook)) then callback(newBook)
 
     produceBook(callback)
     produceBook(callback)

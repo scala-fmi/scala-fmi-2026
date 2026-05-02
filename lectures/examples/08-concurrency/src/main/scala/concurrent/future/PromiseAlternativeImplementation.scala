@@ -1,11 +1,8 @@
 package concurrent.future
 
-import concurrent.{ExecutionContexts, Executors}
+import concurrent.ExecutionContexts
 
-import java.util.concurrent.Executor
-import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.LockSupport
-import scala.annotation.tailrec
 import scala.concurrent.duration.Duration
 import scala.concurrent.{CanAwait, ExecutionContext, TimeoutException}
 import scala.util.{Failure, Success, Try}

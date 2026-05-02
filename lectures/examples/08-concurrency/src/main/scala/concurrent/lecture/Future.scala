@@ -1,11 +1,8 @@
 package concurrent.lecture
 
-import concurrent.Executors
 import product.ProductFactory
-import product.ProductFactory.produceProduct
-import util.Utils
 
-import java.util.concurrent.{CompletableFuture, Executor, ForkJoinPool}
+import java.util.concurrent.{Executor, ForkJoinPool}
 import scala.util.Try
 
 trait Future[+A]:

@@ -15,27 +15,27 @@ object LibraryWebServer extends IOApp.Simple:
   val booksRoutes = HttpRoutes.of[IO]:
     case GET -> Root / "books" =>
       // comma-separated list of all book ids
-//      val responseString =
-//        for booksIds <- library.allBooks
-//        yield booksIds.map(_.id).mkString
+      // 13,2,33,4,5
+      val response =
+        for booksIds <- library.allBooks
+        yield booksIds.map(_.id).mkString(",")
 
-      val responseString = library.allBooks
-        .map(booksIds => booksIds.map(_.id))
-        .map(_.mkString(","))
-
-      Ok(responseString)
+      Ok(response)
 
     case GET -> Root / "books" / bookIdSegment / "name" =>
       library
         .findBook(BookId(bookIdSegment))
-        .flatMap(_.fold(NotFound(s"Book $bookIdSegment not found"))(book => Ok(book.name)))
-//          case Some(book) => Ok(book.name)
-//          case None => NotFound(s"Book $bookIdSegment not found")
+        .flatMap:
+          case Some(book) => Ok(book.name)
+          case None => NotFound(s"Book $bookIdSegment not found")
 
     case GET -> Root / "books" / bookIdSegment / "genre" =>
       library
         .findBook(BookId(bookIdSegment))
-        .flatMap(_.fold(NotFound(s"Book $bookIdSegment not found"))(book => Ok(book.genre)))
+        .flatMap:
+          case Some(book) => Ok(book.genre)
+          case None => NotFound(s"Book $bookIdSegment not found")
+
     case GET -> Root / "books" / bookIdSegment / "authors" =>
       library
         .findBook(BookId(bookIdSegment))

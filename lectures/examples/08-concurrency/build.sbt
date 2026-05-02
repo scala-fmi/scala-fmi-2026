@@ -16,5 +16,5 @@ libraryDependencies ++= Seq(
   "org.http4s" %% "http4s-dsl" % "0.23.26",
   "org.http4s" %% "http4s-ember-server" % "0.23.26",
   "ch.qos.logback" % "logback-classic" % "1.2.11",
-  "org.scalatest" %% "scalatest" % "3.2.18" % Test
+  "org.scalatest" %% "scalatest" % "3.2.20" % Test
 )
