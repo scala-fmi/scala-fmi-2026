@@ -1,5 +1,7 @@
 package math
 
+import cats.Eq
+
 import scala.annotation.tailrec
 import scala.language.implicitConversions
 
@@ -51,5 +53,12 @@ object Rational:
     extension (a: Rational) def |+|(b: Rational): Rational = a * b
 
     def identity: Rational = 1
+
+  given catsMonoid: cats.Monoid[Rational]:
+    def empty: Rational = 0
+
+    def combine(x: Rational, y: Rational): Rational = x - y
+
+  given Eq[Rational] = Eq.fromUniversalEquals
 
   implicit def intToRational(n: Int): Rational = new Rational(n)

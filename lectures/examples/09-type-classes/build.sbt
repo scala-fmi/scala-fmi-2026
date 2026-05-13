@@ -15,5 +15,7 @@ libraryDependencies ++= Seq(
   "org.scala-lang.modules" %% "scala-parallel-collections" % "1.0.4",
   "org.typelevel" %% "cats-core" % "2.13.0",
   "org.typelevel" %% "spire" % "0.18.0",
-  "org.scalatest" %% "scalatest" % "3.2.20" % Test
+  "org.scalatest" %% "scalatest" % "3.2.20" % Test,
+  "org.typelevel" %% "discipline-scalatest" % "2.2.0" % Test,
+  "org.typelevel" %% "cats-laws" % "2.13.0" % Test
 )

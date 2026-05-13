@@ -272,9 +272,6 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb9-1
 <code>fold</code> изисква асоциативна операция
 </p>
 </section>
-<section id="контекст-в-scala-2" class="slide level1">
-<h1>Контекст в Scala 2</h1>
-</section>
 <section id="ооп-класове-срещу-type-class-ове" class="slide level1">
 <h1>ООП класове срещу type class-ове</h1>
 <p class="fragment">
@@ -283,6 +280,26 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb9-1
 <p class="fragment">
 Type class-овете моделират типове
 </p>
+</section>
+<section id="предния-път" class="slide level1">
+<h1>Предния път</h1>
+<p>Type Class:</p>
+<ul>
+<li>Описват определена категория свойства на типовете</li>
+<li>Описват техни операции</li>
+<li>Със синтаксис за тях</li>
+<li>Спазващи определени аксиоми (закони)</li>
+<li>Фиксират се контексно
+<ul>
+<li>За да се разглежда даден тип от даден type class е нужно да бъде
+дадена (<code>given</code>) контекста инстанция</li>
+<li>Може и за дефинирани други типове (ретроактивен полиморфизъм)</li>
+<li>Един тип може да образува няколко различни type class-а</li>
+</ul></li>
+</ul>
+</section>
+<section id="контекст-в-scala-2" class="slide level1">
+<h1>Контекст в Scala 2</h1>
 </section>
 <section id="полиморфизъм" class="slide level1">
 <h1>Полиморфизъм</h1>
@@ -463,17 +480,176 @@ alt="Vivian – Scala Magician" />
 </figure>
 </div>
 </section>
-<section id="моноид-в-cats" class="slide level1">
-<h1>Моноид в Cats</h1>
-</section>
-<section id="multiversal-equality-в-cats-eq" class="slide level1">
-<h1>Multiversal equality в Cats (<code>Eq</code>)</h1>
-</section>
 <section id="scala-with-cats" class="slide level1">
 <h1>Scala with Cats</h1>
 <p><a href="https://underscore.io/books/scala-with-cats/"><img
 data-src="images/09-type-classes/scala-with-cats.png" height="520"
 alt="Scala with Cats" /></a></p>
+</section>
+<section id="cats-1" class="slide level1">
+<h1>Cats</h1>
+<p>Предоставя:</p>
+<ul>
+<li><a href="https://typelevel.org/cats/typeclasses.html">Type
+class-ове</a></li>
+<li>Инстанции на тези type class-ове</li>
+<li><a href="https://typelevel.org/cats/nomenclature.html">Синтаксис</a>
+(предимно под формата на extension методи)</li>
+<li><a href="https://typelevel.org/cats/datatypes.html">Data
+types</a></li>
+<li><a
+href="https://typelevel.org/cats/typeclasses/lawtesting.html">тестване
+на аксиоми</a></li>
+</ul>
+</section>
+<section id="data-types" class="slide level1">
+<h1>Data types</h1>
+<ul>
+<li><a
+href="https://typelevel.org/cats/datatypes/chain.html">Chain</a></li>
+<li><a
+href="https://typelevel.org/cats/datatypes/validated.html">Validated</a></li>
+<li><a href="https://typelevel.org/cats/datatypes/ior.html">Ior</a></li>
+<li><a
+href="https://typelevel.org/cats/datatypes/kleisli.html">Kleisli</a></li>
+<li><a href="https://typelevel.org/cats/datatypes/id.html">Id
+монада</a></li>
+<li><a href="https://typelevel.org/cats/datatypes/state.html">State
+монада</a></li>
+<li><code>FunctionK</code> (a.k.a. <code>~&gt;</code>),
+<code>Nested</code>, <code>Free</code> –<br />ще разгледаме
+допълнително</li>
+<li>…</li>
+</ul>
+</section>
+<section id="синтаксис" class="slide level1">
+<h1>Синтаксис</h1>
+</section>
+<section id="синтаксис-option" class="slide level1">
+<h1>Синтаксис – Option</h1>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>syntax<span class="op">.</span>option<span class="op">.*</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> maybeOne <span class="op">=</span> <span class="fl">1.</span>some <span class="co">// Some(1): Option[Int]</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> maybeN <span class="op">=</span> none<span class="op">[</span><span class="dt">Int</span><span class="op">]</span> <span class="co">// None: Option[Int]</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> either <span class="op">=</span> maybeOne<span class="op">.</span><span class="fu">toRightNec</span><span class="op">(</span><span class="st">&quot;It&#39;s not there :(&quot;</span><span class="op">)</span> <span class="co">// Right(1): Either[String, Int]</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> validated <span class="op">=</span> maybeOne<span class="op">.</span><span class="fu">toValidNec</span><span class="op">(</span><span class="st">&quot;It&#39;s not there :(&quot;</span><span class="op">)</span> <span class="co">// Left(&quot;...&quot;): Either[String, Int]</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> integer <span class="op">=</span> maybeN<span class="op">.</span>orEmpty <span class="co">// 0</span></span></code></pre></div>
+</section>
+<section id="синтаксис-either-и-validated" class="slide level1">
+<h1>Синтаксис – Either и Validated</h1>
+<div class="fragment">
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>syntax<span class="op">.</span>either<span class="op">.*</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> eitherOne <span class="op">=</span> <span class="fl">1.</span>asRight</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> eitherN <span class="op">=</span> <span class="st">&quot;Error&quot;</span><span class="op">.</span>asLeft</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> eitherOneChain <span class="op">=</span> <span class="fl">1.</span>rightNec</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> eitherNChain <span class="op">=</span> <span class="st">&quot;Error&quot;</span><span class="op">.</span>leftNec</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> recoveredEither <span class="op">=</span> eitherN<span class="op">.</span>recover <span class="op">{</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="cf">case</span> <span class="st">&quot;Error&quot;</span> <span class="op">=&gt;</span> <span class="fl">42.</span>asRight</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>eitherOneChain<span class="op">.</span>toValidated</span></code></pre></div>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>syntax<span class="op">.</span>validated<span class="op">.*</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> validatedOne <span class="op">=</span> <span class="fl">1.</span>validNec</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> validatedN <span class="op">=</span> <span class="st">&quot;Error&quot;</span><span class="op">.</span>invalidNec</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>validatedOne<span class="op">.</span>toEither</span></code></pre></div>
+</div>
+</section>
+<section id="type-class-ове" class="slide level1">
+<h1>Type class-ове</h1>
+<p><a
+href="https://cdn.rawgit.com/tpolecat/cats-infographic/master/cats.svg">Поглед
+над йеархиите</a></p>
+</section>
+<section id="type-class-ове-и-синтаксис-чрез-implicit"
+class="slide level1">
+<h1>Type class-ове и синтаксис чрез implicit</h1>
+<div class="fragment">
+<p>Да разгледаме отново дефинирането на Type Class-ове в <a
+href="https://github.com/scala-fmi/scala-fmi-2022/tree/master/lectures/examples/09-type-classes/src/main/scala/math">Scala
+3</a> и <a
+href="https://github.com/scala-fmi/scala-fmi-2022/tree/master/lectures/examples/09-type-classes-scala-2/src/main/scala/math">Scala
+2</a></p>
+</div>
+<ul>
+<li class="fragment">В Scala 3 инстанциите на type class-овете идват
+заедно с техния синтаксис (extension методи)</li>
+<li class="fragment">В Scala 2 инстанциите и синтаксиса са разделени и е
+нужно да бъдат import-нати и двете</li>
+<li class="fragment">Scala 2 използва <code>implicit</code> класове за
+extension методи</li>
+<li class="fragment">В Scala 2 вместо <code>given</code> инстанции се
+използват <code>implicit</code> <code>val</code>-ове и
+<code>def</code>-ове</li>
+<li class="fragment">В Scala 2 вместо <code>using</code> параметри се
+декларират <code>implicit</code> параметри</li>
+<li class="fragment">Всичко останало работи по подобен начин</li>
+<li class="fragment">Scala 3 позволява използване на <code>given</code>,
+където се очаква <code>implicit</code>, и използване на
+<code>implicit</code>, където се очаква <code>using</code></li>
+</ul>
+</section>
+<section id="type-class-ове-и-синтаксис-чрез-implicit-1"
+class="slide level1">
+<h1>Type class-ове и синтаксис чрез implicit</h1>
+<p>Cats използва изцяло Scala 2 синтаксиса за Type Class-ове (чрез
+<code>implicit</code>)</p>
+<div class="fragment">
+<p><a href="../resources/cats-cheat-sheet.md">Cats Cheatsheet</a></p>
+</div>
+</section>
+<section id="сравнение-и-наредба" class="slide level1">
+<h1>Сравнение и наредба</h1>
+<div class="fragment">
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Eq<span class="op">[</span>A<span class="op">]:</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">eqv</span><span class="op">(</span>x<span class="op">:</span> A<span class="op">,</span> y<span class="op">:</span> A<span class="op">):</span> <span class="dt">Boolean</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">neqv</span><span class="op">(</span>x<span class="op">:</span> A<span class="op">,</span> y<span class="op">:</span> A<span class="op">):</span> <span class="dt">Boolean</span> <span class="op">=</span> <span class="op">!</span><span class="fu">eqv</span><span class="op">(</span>x<span class="op">,</span> y<span class="op">)</span></span></code></pre></div>
+</div>
+</section>
+<section id="semigroup-и-monoid" class="slide level1">
+<h1>Semigroup и Monoid</h1>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Semigroup<span class="op">[</span>A<span class="op">]:</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> <span class="fu">combine</span><span class="op">(</span>x<span class="op">:</span> A<span class="op">,</span> y<span class="op">:</span> A<span class="op">):</span> A</span></code></pre></div>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Monoid<span class="op">[</span>A<span class="op">]</span> <span class="kw">extends</span> Semigroup<span class="op">[</span>A<span class="op">]:</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> empty<span class="op">:</span> A</span></code></pre></div>
+</section>
+<section id="semigroup-и-monoid-синтаксис" class="slide level1">
+<h1>Semigroup и Monoid синтаксис</h1>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>syntax<span class="op">.</span>monoid<span class="op">.*</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="op">|+|</span> <span class="dv">2</span> <span class="co">// 3</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="st">&quot;ab&quot;</span><span class="op">.</span><span class="fu">combineN</span><span class="op">(</span><span class="dv">3</span><span class="op">)</span> <span class="co">// &quot;ababab&quot;</span></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="fl">0.</span>isEmpty <span class="co">// true</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>Semigroup<span class="op">[</span><span class="dt">Int</span><span class="op">].</span><span class="fu">combineAllOption</span><span class="op">(</span><span class="ex">List</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">))</span> <span class="co">// Some(6)</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>Monoid<span class="op">[</span><span class="dt">Int</span><span class="op">].</span><span class="fu">combineAll</span><span class="op">(</span><span class="ex">List</span><span class="op">(</span><span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">3</span><span class="op">))</span> <span class="co">// 6</span></span></code></pre></div>
+</section>
+<section id="тестване-на-аксиоми" class="slide level1">
+<h1>Тестване на аксиоми</h1>
+</section>
+<section id="foldable" class="slide level1">
+<h1>Foldable</h1>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="kw">trait</span> Foldable<span class="op">[</span>F<span class="op">[</span>_<span class="op">]]:</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> foldLeft<span class="op">[</span>A<span class="op">,</span> B<span class="op">](</span>fa<span class="op">:</span> F<span class="op">[</span>A<span class="op">],</span> b<span class="op">:</span> B<span class="op">)(</span>f<span class="op">:</span> <span class="op">(</span>B<span class="op">,</span> A<span class="op">)</span> <span class="op">=&gt;</span> B<span class="op">):</span> B</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> foldRight<span class="op">[</span>A<span class="op">,</span> B<span class="op">](</span>fa<span class="op">:</span> F<span class="op">[</span>A<span class="op">],</span> lb<span class="op">:</span> Eval<span class="op">[</span>B<span class="op">])(</span>f<span class="op">:</span> <span class="op">(</span>A<span class="op">,</span> Eval<span class="op">[</span>B<span class="op">])</span> <span class="op">=&gt;</span> Eval<span class="op">[</span>B<span class="op">]):</span> Eval<span class="op">[</span>B<span class="op">]</span></span></code></pre></div>
 </section>
 <section id="в-заключение" class="slide level1">
 <h1>В заключение</h1>

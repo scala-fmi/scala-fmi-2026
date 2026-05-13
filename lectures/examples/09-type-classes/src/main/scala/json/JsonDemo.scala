@@ -15,18 +15,25 @@ import JsonValue.*
     )
   )
 
+  println:
+    cats.toString
+
+  println(42.toJsonString)
   println("1".toJsonString)
 
   println:
     List(1, 2, 3).toJsonString
-  // [1, 2, 3]
-
-  val ivan = Person("Ivan", "ivan@abv.bg", 23)
-  val georgi = Person("Georgi", "georgi@gmail.bg", 28)
 
   println:
+    (None: Option[String]).toJsonString
+  // [1, 2, 3]
+//
+  val ivan = Person("Ivan", "ivan@abv.bg", 23)
+  val georgi = Person("Georgi", "georgi@gmail.bg", 28)
+//
+  println:
     ivan.toJson
-  // JsonObject(Map(name -> JsonString(Ivan), email -> JsonString(ivan@abv.bg), age -> JsonNumber(23)))
+//  // JsonObject(Map(name -> JsonString(Ivan), email -> JsonString(ivan@abv.bg), age -> JsonNumber(23)))
 
   println:
     ivan.toJsonString
@@ -38,22 +45,23 @@ import JsonValue.*
       ivan,
       georgi
     ).toJsonString
-  // [{"name": "Ivan", "email": "ivan@abv.bg", "age": 23}, {"name": "Georgi", "email": "georgi@abv.bg", "age": 28}]
-//
+//  // [{"name": "Ivan", "email": "ivan@abv.bg", "age": 23}, {"name": "Georgi", "email": "georgi@abv.bg", "age": 28}]
+////
   {
     // We might want to skip some fields, like email, for example because we don't want to share
     // user's email with other users.
     // It's really easy to do so with this implementation -
     // just provide another Person's JsonSerializable in this context
 
-    given JsonSerializable[Person] with
+    given JsonSerializable[Person]:
       // An utility can be created to even more easily create JsonObject
-      def toJsonValue(person: Person): JsonValue = JsonObject(
-        Map(
-          "name" -> person.name.toJson,
-          "age" -> person.age.toJson
+      extension (person: Person)
+        def toJson: JsonValue = JsonObject(
+          Map(
+            "name" -> person.name.toJson,
+            "age" -> person.age.toJson
+          )
         )
-      )
 
     // It will compose just as easily
     println:

@@ -10,41 +10,38 @@ enum JsonValue:
 
   override def toString: String = this match
     case JsonNumber(value) => value.toString
-    case JsonString(value) => s"""\"$value\""""
+    case JsonString(value) => s"\"$value\""
     case JsonBoolean(value) => value.toString
     case JsonArray(elements) => "[" + elements.map(_.toString).mkString(", ") + "]"
     case JsonObject(members) =>
       val membersStrings = members.map { case (key, value) =>
-        s"""  \"$key\": ${value.toString}"""
+        s"""  "$key": ${value.toString}"""
       }
       "{\n" + membersStrings.mkString(",\n") + "\n}"
     case JsonNull => "null"
 
 trait JsonSerializable[A]:
-  def toJsonValue(a: A): JsonValue
-
   extension (a: A)
-    def toJson: JsonValue = toJsonValue(a)
+    def toJson: JsonValue
     def toJsonString: String = a.toJson.toString
 
 object JsonSerializable:
   import JsonValue.*
 
   given JsonSerializable[Int]:
-    def toJsonValue(a: Int): JsonValue = JsonNumber(a)
+    extension (a: Int) def toJson: JsonValue = JsonNumber(a)
 
   given JsonSerializable[String]:
-    def toJsonValue(a: String): JsonValue = JsonString(a)
+    extension (a: String) def toJson: JsonValue = JsonString(a)
 
   given JsonSerializable[Boolean]:
-    def toJsonValue(a: Boolean): JsonValue = JsonBoolean(a)
+    extension (a: Boolean) def toJson: JsonValue = JsonBoolean(a)
 
-  given [A : JsonSerializable] => JsonSerializable[Option[A]]:
-    def toJsonValue(opt: Option[A]): JsonValue = opt match
-      case Some(a) => a.toJson
-      case _ => JsonNull
+  given [A: JsonSerializable] => JsonSerializable[Option[A]]:
+    extension (a: Option[A]) def toJson: JsonValue = a.map(_.toJson).getOrElse(JsonNull)
 
-  given [A : JsonSerializable] => JsonSerializable[List[A]]:
-    def toJsonValue(a: List[A]): JsonValue = JsonArray(
-      a.map(value => value.toJson)
-    )
+  given [A: JsonSerializable] => JsonSerializable[List[A]]:
+    extension (as: List[A])
+      def toJson: JsonValue = JsonArray(
+        as.map(_.toJson)
+      )

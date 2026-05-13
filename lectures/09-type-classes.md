@@ -163,13 +163,26 @@ Type class-овете дефинират операции и аксиоми/св
 
 <p class="fragment">`fold` изисква асоциативна операция</p>
 
-# Контекст в Scala 2
-
 # ООП класове срещу type class-ове
 
 <p class="fragment">Класовете в ООП моделират обекти</p>
 
 <p class="fragment">Type class-овете моделират типове</p>
+
+# Предния път
+
+Type Class:
+
+* Описват определена категория свойства на типовете
+* Описват техни операции
+* Със синтаксис за тях
+* Спазващи определени аксиоми (закони)
+* Фиксират се контексно
+  * За да се разглежда даден тип от даден type class е нужно да бъде дадена (`given`) контекста инстанция
+  * Може и за дефинирани други типове (ретроактивен полиморфизъм)
+  * Един тип може да образува няколко различни type class-а
+
+# Контекст в Scala 2
 
 # Полиморфизъм
 
@@ -347,13 +360,163 @@ Type class-овете поддържат ретроактивен полимор
 
 :::
 
-# Моноид в Cats
-
-# Multiversal equality в Cats (`Eq`)
-
 # Scala with Cats
 
 [![Scala with Cats](images/09-type-classes/scala-with-cats.png){ height="520" }](https://underscore.io/books/scala-with-cats/)
+
+# Cats
+
+Предоставя:
+
+* [Type class-ове](https://typelevel.org/cats/typeclasses.html)
+* Инстанции на тези type class-ове
+* [Синтаксис](https://typelevel.org/cats/nomenclature.html) (предимно под формата на extension методи)
+* [Data types](https://typelevel.org/cats/datatypes.html)
+* [тестване на аксиоми](https://typelevel.org/cats/typeclasses/lawtesting.html)
+
+# Data types
+
+* [Chain](https://typelevel.org/cats/datatypes/chain.html)
+* [Validated](https://typelevel.org/cats/datatypes/validated.html)
+* [Ior](https://typelevel.org/cats/datatypes/ior.html)
+* [Kleisli](https://typelevel.org/cats/datatypes/kleisli.html)
+* [Id монада](https://typelevel.org/cats/datatypes/id.html)
+* [State монада](https://typelevel.org/cats/datatypes/state.html)
+* `FunctionK` (a.k.a. `~>`), `Nested`, `Free` –<br />ще разгледаме допълнително
+* ...
+
+# Синтаксис
+
+# Синтаксис – Option
+
+```scala
+import cats.syntax.option.*
+
+val maybeOne = 1.some // Some(1): Option[Int]
+val maybeN = none[Int] // None: Option[Int]
+
+val either = maybeOne.toRightNec("It's not there :(") // Right(1): Either[String, Int]
+val validated = maybeOne.toValidNec("It's not there :(") // Left("..."): Either[String, Int]
+
+val integer = maybeN.orEmpty // 0
+```
+
+# Синтаксис – Either и Validated
+
+::: { .fragment }
+
+```scala
+import cats.syntax.either.*
+
+val eitherOne = 1.asRight
+val eitherN = "Error".asLeft
+
+val eitherOneChain = 1.rightNec
+val eitherNChain = "Error".leftNec
+
+val recoveredEither = eitherN.recover {
+  case "Error" => 42.asRight
+}
+
+eitherOneChain.toValidated
+```
+
+:::
+
+::: { .fragment }
+
+```scala
+import cats.syntax.validated.*
+
+val validatedOne = 1.validNec
+val validatedN = "Error".invalidNec
+
+validatedOne.toEither
+```
+
+:::
+
+# Type class-ове
+
+[Поглед над йеархиите](https://cdn.rawgit.com/tpolecat/cats-infographic/master/cats.svg)
+
+# Type class-ове и синтаксис чрез implicit
+
+::: { .fragment }
+
+Да разгледаме отново дефинирането на Type Class-ове в [Scala 3](https://github.com/scala-fmi/scala-fmi-2022/tree/master/lectures/examples/09-type-classes/src/main/scala/math) и [Scala 2](https://github.com/scala-fmi/scala-fmi-2022/tree/master/lectures/examples/09-type-classes-scala-2/src/main/scala/math)
+
+:::
+
+::: incremental
+
+* В Scala 3 инстанциите на type class-овете идват заедно с техния синтаксис (extension методи)
+* В Scala 2 инстанциите и синтаксиса са разделени и е нужно да бъдат import-нати и двете
+* Scala 2 използва `implicit` класове за extension методи
+* В Scala 2 вместо `given` инстанции се използват `implicit` `val`-ове и `def`-ове
+* В Scala 2 вместо `using` параметри се декларират `implicit` параметри
+* Всичко останало работи по подобен начин
+* Scala 3 позволява използване на `given`, където се очаква `implicit`, и използване на `implicit`, където се очаква `using`
+
+:::
+
+# Type class-ове и синтаксис чрез implicit
+
+Cats използва изцяло Scala 2 синтаксиса за Type Class-ове (чрез `implicit`)
+
+::: { .fragment }
+
+[Cats Cheatsheet](../resources/cats-cheat-sheet.md)
+
+:::
+
+# Сравнение и наредба
+
+::: { .fragment }
+
+```scala
+trait Eq[A]:
+  def eqv(x: A, y: A): Boolean
+
+  def neqv(x: A, y: A): Boolean = !eqv(x, y)
+```
+
+:::
+
+# Semigroup и Monoid
+
+```scala
+trait Semigroup[A]:
+  def combine(x: A, y: A): A
+```
+```scala
+trait Monoid[A] extends Semigroup[A]:
+  def empty: A
+```
+
+# Semigroup и Monoid синтаксис
+
+```scala
+import cats.syntax.monoid.*
+
+1 |+| 2 // 3
+"ab".combineN(3) // "ababab"
+
+0.isEmpty // true
+
+Semigroup[Int].combineAllOption(List(1, 2, 3)) // Some(6)
+Monoid[Int].combineAll(List(1, 2, 3)) // 6
+```
+
+# Тестване на аксиоми
+
+# Foldable
+
+```scala
+trait Foldable[F[_]]:
+  def foldLeft[A, B](fa: F[A], b: B)(f: (B, A) => B): B
+  def foldRight[A, B](fa: F[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B]
+```
 
 # В заключение
 

@@ -13,8 +13,8 @@ import spire.implicits.*
     def scalar: Field[Double] = Field[Double]
 
     def zero: A => Double = _ => 0.0
-    def negate(x: A => Double): A => Double = a => -x(a)
-    def plus(x: A => Double, y: A => Double): A => Double = a => x(a) + y(a)
+    def negate(f: A => Double): A => Double = a => -f(a)
+    def plus(f: A => Double, g: A => Double): A => Double = a => f(a) + g(a)
     def timesl(r: Double, v: A => Double): A => Double = a => r * v(a)
 
   val doubling = (n: Double) => n * 2
