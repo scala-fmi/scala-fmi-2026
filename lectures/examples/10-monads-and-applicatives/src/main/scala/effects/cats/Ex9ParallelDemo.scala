@@ -3,11 +3,14 @@ package effects.cats
 import effects.cats.AlternativeUserRegistration.*
 import cats.arrow.FunctionK
 import cats.data.{EitherNec, ValidatedNec, ZipList}
-import cats.syntax.apply.*
-import cats.syntax.either.*
-import cats.syntax.parallel.*
-import cats.syntax.validated.*
 import effects.cats.user.Email
+//import cats.syntax.apply.*
+//import cats.syntax.either.*
+//import cats.syntax.parallel.*
+//import cats.syntax.validated.*
+//import effects.cats.user.Email
+import cats.syntax.all.*
+import cats.instances.parallel.*
 
 @main def runParallelDemo =
   def registerUser(token: String)(name: String, email: String): EitherNec[String, User] = for
@@ -23,6 +26,12 @@ import effects.cats.user.Email
   println {
     (List(1, 2, 3), List(10, 20, 30), List(100, 200, 300)).mapN((x, y, z) => x + y + z)
   }
+
+  for
+    i <- List(1, 2, 3)
+    j <- List(10, 20, 30)
+    k <- List(100, 200, 300)
+  yield i + j + k
 
   println {
     (List(1, 2, 3), List(10, 20, 30), List(100, 200, 300)).parMapN((x, y, z) => x + y + z)

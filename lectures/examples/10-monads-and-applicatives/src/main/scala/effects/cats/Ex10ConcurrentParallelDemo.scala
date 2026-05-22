@@ -38,8 +38,7 @@ import scala.concurrent.duration.DurationInt
   def square(n: Int): IO[Int] = IO.sleep(1.second) >> IO(n * n)
 
   val calc = for
-    combined <- (square(2), square(10), square(20)).parTupled
-    (a, b, c) = combined
+    (a, b, c) <- (square(2), square(10), square(20)).parTupled
     d <- double(a + b + c)
   yield d
 

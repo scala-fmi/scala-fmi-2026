@@ -530,10 +530,8 @@ class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb23-
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="kw">def</span> traverse<span class="op">[</span>A<span class="op">,</span>B<span class="op">](</span>as<span class="op">:</span> <span class="ex">List</span><span class="op">[</span>A<span class="op">])(</span>f<span class="op">:</span> A <span class="op">=&gt;</span> F<span class="op">[</span>B<span class="op">]):</span> F<span class="op">[</span><span class="ex">List</span><span class="op">[</span>B<span class="op">]]</span> <span class="op">=</span></span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    as<span class="op">.</span><span class="fu">foldRight</span><span class="op">(</span><span class="fu">unit</span><span class="op">(</span><span class="ex">List</span><span class="op">[</span>B<span class="op">]()))((</span>a<span class="op">,</span> mbs<span class="op">)</span> <span class="op">=&gt;</span> <span class="fu">map2</span><span class="op">(</span><span class="fu">f</span><span class="op">(</span>a<span class="op">),</span> mbs<span class="op">)(</span>_ <span class="op">::</span> _<span class="op">))</span></span></code></pre></div>
 </section>
-<section id="sequence-traverse-1" class="slide level1">
-<h1>sequence &amp; traverse</h1>
-<p>Примери: <code>effects/ApplicativeSequenceDemo</code> &amp;
-<code>effects/ApplicativeTraverseDemo</code></p>
+<section id="sequence-traverse-примери" class="slide level1">
+<h1>sequence &amp; traverse – примери</h1>
 </section>
 <section id="traversable" class="slide level1">
 <h1>Traversable</h1>
@@ -643,7 +641,7 @@ class="slide level1">
 <p>Функторите могат да бъдат композирани:</p>
 <div class="sourceCode" id="cb34"><pre
 class="sourceCode scala"><code class="sourceCode highlightscala"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>Functor</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>implicits<span class="op">.*</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="kw">import</span> cats<span class="op">.</span>syntax<span class="op">.</span>all<span class="op">.*</span></span>
 <span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="kw">val</span> listOption <span class="op">=</span> <span class="ex">List</span><span class="op">(</span><span class="bu">Some</span><span class="op">(</span><span class="dv">1</span><span class="op">),</span> <span class="bu">None</span><span class="op">,</span> <span class="bu">Some</span><span class="op">(</span><span class="dv">2</span><span class="op">))</span></span>
 <span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a><span class="co">// listOption: List[Option[Int]] = List(Some(1), None, Some(2))</span></span>
@@ -678,6 +676,35 @@ href="https://typelevel.org/cats/datatypes/optiont.html"><code>OptionT</code></a
 за монади от <code>Option</code><br />(тоест <code>M[Option[_]]</code>,
 където <code>M</code> е монада)
 </p>
+</section>
+<section id="композиция-на-монади-optiont-и-eithert"
+class="slide level1">
+<h1>Композиция на монади – <code>OptionT</code> и
+<code>EitherT</code></h1>
+<div class="fragment">
+<p><a
+href="https://github.com/scala-fmi/scala-fmi-2021/blob/master/lectures/07-effects-and-functional-error-handling.ipynb">EitherT
+от лекцията за ефекти</a></p>
+</div>
+</section>
+<section id="free-монада" class="slide level1">
+<h1>Free Монада:</h1>
+<ul>
+<li class="fragment">позволява изграждането не езици и
+интерпретатори</li>
+<li class="fragment">няма да го разглеждаме в курса</li>
+<li class="fragment">повече на следните ресурси:
+<ul>
+<li class="fragment"><a
+href="https://www.youtube.com/watch?v=aKUQUIHRGec">Free as in
+Monads</a></li>
+<li class="fragment"><a
+href="https://www.youtube.com/watch?v=M258zVn4m2M">Composable
+application architecture with reasonably priced monads</a></li>
+<li class="fragment"><a
+href="https://www.youtube.com/watch?v=ycrpJrcWMp4">Free Monads</a></li>
+</ul></li>
+</ul>
 </section>
 <section id="въпроси" class="slide level1">
 <h1>Въпроси :)?</h1>

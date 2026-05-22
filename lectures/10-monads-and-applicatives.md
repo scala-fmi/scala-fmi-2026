@@ -460,9 +460,7 @@ def map4[A,B,C,D,E](fa: F[A],
     as.foldRight(unit(List[B]()))((a, mbs) => map2(f(a), mbs)(_ :: _))
 ```
 
-# sequence & traverse
-
-Примери: `effects/ApplicativeSequenceDemo` & `effects/ApplicativeTraverseDemo`
+# sequence & traverse – примери
 
 # Traversable
 
@@ -583,7 +581,7 @@ trait Parallel[M[_]] extends NonEmptyParallel[M]:
 
 ```scala
 import cats.Functor
-import cats.implicits.*
+import cats.syntax.all.*
 
 val listOption = List(Some(1), None, Some(2))
 // listOption: List[Option[Int]] = List(Some(1), None, Some(2))
@@ -615,5 +613,26 @@ val composed = Applicative[Future].compose[Option].map2(x, y)(_ + _)
 <p class="fragment">Това води до нуждата от специфични монадни трансформатори</p>
 
 <p class="fragment">Например [`OptionT`](https://typelevel.org/cats/datatypes/optiont.html) за монади от `Option`<br />(тоест `M[Option[_]]`, където `M` е монада)</p>
+
+# Композиция на монади – `OptionT` и `EitherT`
+
+::: { .fragment }
+
+[EitherT от лекцията за ефекти](https://github.com/scala-fmi/scala-fmi-2021/blob/master/lectures/07-effects-and-functional-error-handling.ipynb)
+
+:::
+
+# Free Монада:
+
+::: incremental
+
+* позволява изграждането не езици и интерпретатори
+* няма да го разглеждаме в курса
+* повече на следните ресурси:
+  - [Free as in Monads](https://www.youtube.com/watch?v=aKUQUIHRGec)
+  - [Composable application architecture with reasonably priced monads](https://www.youtube.com/watch?v=M258zVn4m2M)
+  - [Free Monads](https://www.youtube.com/watch?v=ycrpJrcWMp4)
+
+:::
 
 # Въпроси :)?

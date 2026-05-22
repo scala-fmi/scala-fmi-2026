@@ -29,7 +29,7 @@ trait Applicative[F[_]] extends Functor[F]:
     apply(apply(apply(apply(unit(f.curried))(fa))(fb))(fc))(fd)
 
   extension [A](lfa: List[F[A]])
-    def sequence: F[List[A]] = lfa.traverse(fa => fa)
+    def sequence: F[List[A]] = lfa.traverse(identity)
 
     def sequenceAlternativeApplementation: F[List[A]] =
       lfa.foldRight(unit(List[A]())) { (next, acc) =>
@@ -87,48 +87,44 @@ object Applicative:
   val o3 = Some(3)
   val o4 = Some(4)
 
-  println {
+  println:
     Applicative[Option].map4(o1, o2, o3, o4) { (el1, el2, el3, el4) => s"$el1-$el2-$el3-$el4" }
-  }
 
-  println {
+  println:
     Applicative[Option].map3(o1, o3, o4) { (el1, el3, el4) => s"$el1-$el3-$el4" }
-  }
 
 @main def runApplicativeSequenceDemo =
+  import Applicative.given
+
   val listOfOptions: List[Option[Int]] = (1 to 10).map(Some.apply).toList
   val listOfOptionsWithNone: List[Option[Int]] = List(Some(1), None, Some(3))
 
-  println {
-    Applicative[Option].sequence(listOfOptions)
-  }
-  println {
-    Applicative[Option].sequence(listOfOptionsWithNone)
-  }
+  println:
+    listOfOptions.sequence
+  println:
+    listOfOptionsWithNone.sequence
 
   type EitherString[T] = Either[String, T]
 
   val listOfEithers: List[EitherString[Int]] = List(Right(1), Right(2), Right(3))
   val listOfEithersWithLeft: List[EitherString[Int]] = List(Left("one"), Right(2), Left("three"))
 
-  println {
-    Applicative[EitherString].sequence(listOfEithers)
-  }
-  println {
-    Applicative[EitherString].sequence(listOfEithersWithLeft)
-  }
+  println:
+    listOfEithers.sequence
+  println:
+    listOfEithersWithLeft.sequence
 
 @main def runApplicativeTraverseDemo =
   type EitherNFE[T] = Either[NumberFormatException, T]
+
+  import Applicative.given Applicative[EitherNFE]
 
   def parseIntEither(s: String): EitherNFE[Int] =
     try Right(s.toInt)
     catch case ex: NumberFormatException => Left(ex)
 
-  println {
-    Applicative[EitherNFE].traverse(List("1", "2", "3"))(parseIntEither)
-  }
+  println:
+    List("1", "2", "3").traverse(parseIntEither)
 
-  println {
-    Applicative[EitherNFE].traverse(List("1", "abc", "3"))(parseIntEither)
-  }
+  println:
+    List("1", "abc", "3").traverse(parseIntEither)

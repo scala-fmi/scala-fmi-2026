@@ -1,11 +1,9 @@
 package effects.cats
 
-import cats.{Applicative, Functor, Monad}
 import cats.data.OptionT
+import cats.effect.IO
 import cats.syntax.all.*
-
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import cats.{Applicative, Functor, Monad, Traverse}
 
 @main def runCompositionDemo =
   val listOfOptions: List[Option[Int]] = List(Some(1), None, Some(2))
@@ -30,33 +28,34 @@ import scala.concurrent.Future
 
   // Monad composition cannot be defined generically like we did for Functor or Applicative
   // Monads can be composed only if G is a Traverse, i.e. the way composition is done depends on the nested effect
-  def composedMonad[F[_]: Monad, G[_]: Monad, Traverse] =
+  def composedMonad[F[_]: Monad, G[_]: {Monad, Traverse}] =
     new Monad[[A] =>> F[G[A]]]:
       def pure[A](x: A): F[G[A]] = x.pure[G].pure[F]
 
-      def flatMap[A, B](fga: F[G[A]])(f: A => F[G[B]]): F[G[B]] = ???
-//        fga.flatMap: ga =>
-//          val gfgb = Monad[G].map(ga)(f)
-//          val fggb = gfgb.sequence
-//          val fgb = fggb.map(_.flatten)
-//
-//          fgb
+      def flatMap[A, B](fga: F[G[A]])(f: A => F[G[B]]): F[G[B]] = 
+        fga.flatMap: ga =>
+          val gfgb = Monad[G].map(ga)(f)
+          val fggb = gfgb.sequence
+          val fgb = fggb.map(_.flatten)
+
+          fgb
 
       def tailRecM[A, B](a: A)(f: A => F[G[Either[A, B]]]): F[G[B]] = ???
 
   // OptionT allow us to compose any monad with an Option
   // There is also a variant called EitherT for Eithers
-  def monadComposition: Future[Option[String]] =
-    val greetingFO: Future[Option[String]] = Future.successful(Some("Hello"))
+  def monadComposition: IO[Option[String]] =
+    val greetingIOO: IO[Option[String]] = "Hello".some.pure
 
-    val firstnameF: Future[String] = Future.successful("Jane")
+    val firstnameIO: IO[String] = "Jane".pure
 
-    val lastnameO: Option[String] = Some("Doe")
+    val lastnameO: Option[String] = "Doe".some
 
-    val greeting: OptionT[Future, String] = for
-      g <- OptionT(greetingFO)
-      f <- OptionT.liftF(firstnameF)
-      l <- OptionT.fromOption[Future](lastnameO)
-    yield s"$g $f $l"
+    val greeting: OptionT[IO, String] =
+      for
+        g <- OptionT(greetingIOO)
+        f <- OptionT.liftF(firstnameIO)
+        l <- lastnameO.toOptionT
+      yield s"$g $f $l"
 
     greeting.value

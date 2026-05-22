@@ -34,5 +34,4 @@ object Maybe:
 
   Monad[Maybe].map2(maybe1, maybe2)(_ + _)
 
-  // TODO: use sequence on these:
-  // val listOfMaybes = List(Just(1), Nthng, Just(2))
+  List(Just(1), Nthng, Just(2)).sequence

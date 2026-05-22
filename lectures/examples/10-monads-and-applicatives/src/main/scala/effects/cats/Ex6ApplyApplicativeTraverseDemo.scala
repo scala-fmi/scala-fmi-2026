@@ -1,13 +1,15 @@
 package effects.cats
 
+import cats.Applicative
 import cats.data.ValidatedNec
 import cats.effect.IO
+import cats.effect.unsafe.implicits.global
 import cats.syntax.applicative.*
 import cats.syntax.apply.*
 import cats.syntax.option.*
 import cats.syntax.traverse.*
 import effects.cats.user.UserRegistration.*
-import effects.cats.user.{User, RegistrationForm, RegistrationFormError}
+import effects.cats.user.{RegistrationForm, RegistrationFormError, User}
 
 @main def runApplyApplicativeTraverseDemo =
   // Apply
@@ -54,21 +56,30 @@ import effects.cats.user.{User, RegistrationForm, RegistrationFormError}
     validatePassword(registrationForm.password)
 
   // Collects all the errors, but returns only the valid name in the end
-  val validated = validatePassword(registrationForm.password) *>
-    validateEmail(registrationForm.email) *>
+  val validated = validatePassword("dfadsfsa") *>
+    validateEmail("maaiil") *>
     validateName(registrationForm.name)
 
   println(validated)
 
-  println {
-    fourtyTwo.replicateA(5)
-  }
+  println:
+    IO.println("Zdrasti").replicateA(5).unsafeRunSync()
 
   // Traverse
 
   List(1.some, 2.some, 3.some, 4.some).sequence
   List(1, 2, 3, 4).traverse(_.some)
 
+  println:
+    List(1, 2, 3, 4).flatTraverse(n => Option(List(n, n + 1, n + 2)))
+
   val items = List(10.some, 2.some, none, 42.some, 100.some)
   val maxItem = items.sequence.flatMap(_.maxOption).getOrElse(Int.MaxValue)
   println(maxItem)
+
+  def doubleInteger(n: Int): IO[Int] =
+    Applicative[IO].whenA(n == Int.MaxValue)(IO.println("Integer will overflow!!!"))
+      *> IO(n * 2)
+
+  println:
+    doubleInteger(maxItem).unsafeRunSync()

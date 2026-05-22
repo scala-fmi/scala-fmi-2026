@@ -10,10 +10,10 @@ object FormValidatorNecApplicative:
 
   type ValidationResult[A] = ValidatedNec[DomainValidation, A]
 
-  private def validateUserName(userName: String): ValidationResult[String] =
+  def validateUserName(userName: String): ValidationResult[String] =
     if userName.matches("^[a-zA-Z0-9]+$") then userName.validNec else UsernameHasSpecialCharacters.invalidNec
 
-  private def validatePassword(password: String): ValidationResult[String] =
+  def validatePassword(password: String): ValidationResult[String] =
     if password.matches("(?=^.{10,}$)((?=.*\\d)|(?=.*\\W+))(?![.\\n])(?=.*[A-Z])(?=.*[a-z]).*$") then password.validNec
     else PasswordDoesNotMeetCriteria.invalidNec
 
@@ -46,3 +46,18 @@ object FormValidatorNecApplicative:
       password = "password"
     )
   }
+
+import cats.syntax.validated.*
+
+@main def sequenceValidatedExample =
+  import FormValidatorNecApplicative.*
+  import FormValidatorNecApplicative.given
+
+  val validations = List(
+    validateUserName("$E43423@#"),
+    "valid".validNec,
+    validatePassword("password")
+  )
+
+  println:
+    validations.sequence
