@@ -1,6 +1,6 @@
 package streams.tictactoe
 
-import cats.effect.{ExitCode, IO, IOApp, Resource}
+import cats.effect.{IO, IOApp, Resource}
 import fs2.{Pipe, Stream}
 import streams.tictactoe.TicTacToeWebSocketData.NewState
 import sttp.capabilities

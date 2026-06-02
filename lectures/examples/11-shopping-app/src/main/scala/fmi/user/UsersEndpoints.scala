@@ -1,7 +1,7 @@
 package fmi.user
 
 import fmi.user.authentication.AuthenticatedUser
-import fmi.{ShoppingAppEndpoints, UnauthorizedAccess}
+import fmi.http.{ShoppingAppEndpoints, UnauthorizedAccess, jsonBodyTypedError}
 import sttp.model.StatusCode.{BadRequest, Unauthorized}
 import sttp.tapir.*
 import sttp.tapir.json.circe.*
@@ -26,13 +26,13 @@ object UsersEndpoints:
   val loginUserEndpoint = usersBaseEndpoint
     .in("login")
     .in(jsonBody[UserLogin])
-    .out(setCookie("loggedUser"))
+    .out(setCookie(SessionCookie))
     .errorOut(
-      statusCode(Unauthorized).and(jsonBody[UnauthorizedAccess])
+      statusCode(Unauthorized).and(jsonBodyTypedError[UnauthorizedAccess])
     )
     .post
 
   val logoutUserEndpoint = usersBaseEndpoint
-    .in("logout")
-    .out(setCookie("loggedUser"))
-    .post
+    .in("current")
+    .out(setCookie(SessionCookie))
+    .delete

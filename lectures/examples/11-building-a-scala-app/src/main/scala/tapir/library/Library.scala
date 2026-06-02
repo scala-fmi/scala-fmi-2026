@@ -14,7 +14,7 @@ object BookId:
   given Codec[BookId] = Codec.implied[String]
   given Schema[BookId] = Schema(SchemaType.SString())
   given tapir.Codec[String, BookId, CodecFormat.TextPlain] =
-    tapir.Codec.string.map(BookId.apply)(_.asString)
+    tapir.Codec.string.map(BookId.apply)(_.asString).validate(Validator.minLength(4))
 
 case class Book(id: BookId, name: String, authors: List[AuthorId], genre: String) derives Codec, Schema
 

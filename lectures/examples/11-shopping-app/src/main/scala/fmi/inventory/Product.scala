@@ -1,7 +1,6 @@
 package fmi.inventory
 
 import doobie.Meta
-import fmi.utils.CirceUtils
 import io.circe.Codec
 import sttp.tapir
 import sttp.tapir.{CodecFormat, Schema, SchemaType, Validator}
@@ -15,6 +14,7 @@ object ProductId:
   given Codec[ProductId] = Codec.implied[String]
   given Schema[ProductId] = Schema(SchemaType.SString())
   given Meta[ProductId] = Meta[String]
+  given Ordering[ProductId] = Ordering[String]
 
   given tapir.Codec[String, ProductId, CodecFormat.TextPlain] =
     tapir.Codec.string.validate(Validator.minLength(3)).map(ProductId.apply)(_.asString)

@@ -29,9 +29,8 @@ class UsersRepository(dbTransactor: DbTransactor):
       VALUES (${user.id}, ${user.passwordHash}, ${user.role}, ${user.name}, ${user.age})
     """.update.run
       .as(user)
-      .attemptSomeSqlState { case sqlstate.class23.UNIQUE_VIOLATION =>
-        UserAlreadyExists(user.id)
-      }
+      .attemptSomeSqlState:
+        case sqlstate.class23.UNIQUE_VIOLATION => UserAlreadyExists(user.id)
       .transact(dbTransactor)
 
   def deleteUser(id: UserId): IO[Unit] =

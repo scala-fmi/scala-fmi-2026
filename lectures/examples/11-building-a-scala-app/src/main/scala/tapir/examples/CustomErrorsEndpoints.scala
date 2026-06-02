@@ -4,36 +4,46 @@ import io.circe
 import io.circe.*
 import io.circe.Decoder.Result
 import io.circe.derivation.ConfiguredCodec
-import sttp.model.StatusCode
+import sttp.model.StatusCode.{BadRequest, NotFound}
 import sttp.tapir.Schema.SName
 import sttp.tapir.generic.Configuration as TapirConfiguration
 import sttp.tapir.json.circe.*
-import sttp.tapir.{Codec as _, *}
+import sttp.tapir.{statusCode, Codec as _, *}
 
 import scala.reflect.ClassTag
 
-def jsonBodyError[T: {Encoder.AsObject as encoder, Decoder, Schema as tSchema, ClassTag as classTag}](
-  statusCodeOutput: StatusCode,
-  decorateOutput: EndpointIO.Body[String, T] => EndpointIO.Body[String, T] = identity[EndpointIO.Body[String, T]]
-)(using tc: TapirConfiguration
-): EndpointOutput[T] =
+//val securityHeadersInput: EndpointInput[SecurityHeaders] =
+//  header[RequestId]("RequestId")
+//    .and(auth.bearer[Secret[String]]())
+//    .and(header[Option[ClientId]]("OriginClientId"))
+//    .and(header[Option[UserId]]("OriginUserId"))
+//    .and(header[Option[DeviceId]]("OriginDeviceId"))
+//    .and(header[Option[OperationId]]("operationid"))
+//    .mapTo[SecurityHeaders]
+
+def jsonBodyTypedError[T: {Encoder.AsObject as encoder, Decoder, Schema as tSchema, ClassTag as classTag}](
+  using tc: TapirConfiguration
+): EndpointIO.Body[String, T] =
   val typeClassName = classTag.runtimeClass.getSimpleName
   val typeName = tc.toDiscriminatorValue(SName(typeClassName))
+  val typeDiscriminator = tc.discriminator.getOrElse("type")
 
   val extendedEncoder = new Encoder.AsObject[T]:
     def encodeObject(a: T): JsonObject =
       encoder
         .encodeObject(a)
-        .add("httpStatus", Json.fromInt(statusCodeOutput.code))
-        .add("code", Json.fromString(typeName))
+        .add(typeDiscriminator, Json.fromString(typeName))
 
   val extendedDecoder = new Decoder[T]:
     def apply(c: HCursor): Result[T] =
       for
         _ <- c
-          .downField("code")
+          .downField(typeDiscriminator)
           .as[String]
-          .filterOrElse(_ == typeName, DecodingFailure(s"Code must be $typeName", c.downField("code").history))
+          .filterOrElse(
+            _ == typeName,
+            DecodingFailure(s"'$typeDiscriminator' must be $typeName", c.downField(typeDiscriminator).history)
+          )
         value <- c.as[T]
       yield value
     end apply
@@ -43,22 +53,17 @@ def jsonBodyError[T: {Encoder.AsObject as encoder, Decoder, Schema as tSchema, C
       product.copy(fields =
         product.fields ++ List(
           SchemaType.SProductField(
-            FieldName("code", "code"),
+            FieldName(typeDiscriminator, typeDiscriminator),
             Schema.schemaForString.encodedDiscriminatorValue(typeName),
             _ => Some(typeName)
-          ),
-          SchemaType.SProductField(
-            FieldName("httpStatus", "httpStatus"),
-            Schema.schemaForInt.validate(Validator.enumeration(List(statusCodeOutput.code))),
-            _ => Some(statusCodeOutput.code)
           )
         )
       )
     case _ => throw new RuntimeException("Schema must be SProduct")
   val extendedSchema = tSchema.copy(schemaType = extendedSchemaType)
 
-  statusCode(statusCodeOutput).and(decorateOutput(jsonBody[T](using extendedEncoder, extendedDecoder, extendedSchema)))
-end jsonBodyError
+  jsonBody[T](using extendedEncoder, extendedDecoder, extendedSchema)
+end jsonBodyTypedError
 
 trait Error
 case class CustomError(message: String, name: String) extends Error
@@ -89,21 +94,22 @@ object CustomErrorsEndpoints:
     given Schema[Address] = Schema.string[Address]
   case class Person(name: String, age: Int, address: Address) derives circe.Codec, Schema
 
-  val peopleListing =
+  val peopleListing: Endpoint[Unit, Unit, CustomError | CustomError2, List[Person], Any] =
     endpoint.get
       .in("people")
       .out(jsonBody[List[Person]])
       .errorOut(
-        oneOf(
+        oneOf[CustomError | CustomError2](
           oneOfVariant(
-            jsonBodyError[CustomError](StatusCode.BadRequest, _.example(CustomError("Custom Error", "Custom Name")))
+            statusCode(BadRequest).and(jsonBody[CustomError].example(CustomError("Custom Error", "Custom Name")))
           ),
           oneOfVariant(
-            jsonBodyError[CustomError2](
-              StatusCode.NotFound,
-              _.example(CustomError2("Custom Error 2", "Custom Name 2"))
-            )
+            statusCode(NotFound).and(jsonBody[CustomError2].example(CustomError2("Custom Error 2", "Custom Name 2")))
           )
-          //          oneOfVariant(jsonBody[BadRequest](StatusCode.BadRequest))
         )
       )
+
+  import cats.syntax.all.*
+  
+  peopleListing.serverLogicPure: _ => 
+    CustomError2("a", "b").asLeft

@@ -1,7 +1,8 @@
 package fmi.shopping
 
-import fmi.{AuthenticationError, ConflictDescription, HttpError, ResourceNotFound, ShoppingAppEndpoints}
-import sttp.model.StatusCode.{Conflict, NotFound}
+import fmi.inventory.NotEnoughStockAvailable
+import fmi.http.{AuthenticationError, ShoppingAppEndpoints, jsonBodyTypedError}
+import sttp.model.StatusCode.Conflict
 import sttp.tapir.*
 import sttp.tapir.json.circe.*
 
@@ -14,6 +15,6 @@ object ShoppingEndpoints:
     ordersBaseEndpoint.secure
       .in(jsonBody[ShoppingCart])
       .out(jsonBody[Order])
-      .errorOutVariant[AuthenticationError | ConflictDescription](
-        oneOfVariant(statusCode(Conflict).and(jsonBody[ConflictDescription]))
+      .errorOutVariant[NotEnoughStockAvailable | AuthenticationError](
+        oneOfVariant(statusCode(Conflict).and(jsonBodyTypedError[NotEnoughStockAvailable]))
       )

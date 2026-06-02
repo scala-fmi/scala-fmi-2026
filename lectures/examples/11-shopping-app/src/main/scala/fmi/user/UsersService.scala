@@ -10,24 +10,23 @@ import sttp.tapir.Schema
 import sttp.tapir.integ.cats.codec.*
 
 class UsersService(usersRepository: UsersRepository):
-  def registerUser(registrationForm: UserRegistrationForm): IO[Either[RegistrationError, User]] = (for
-    user <- 
-      UserRegistrationForm
-        .validate(registrationForm)
-        .leftMap(UserValidationError.apply)
-        .toEitherT
-    
-    _ <- EitherT(usersRepository.registerUser(user))
-  yield user).value
+  def registerUser(registrationForm: UserRegistrationForm): IO[Either[RegistrationError, User]] =
+    (for
+      user <-
+        UserRegistrationForm
+          .validate(registrationForm)
+          .leftMap(UserValidationError.apply)
+          .toEitherT[IO]
+
+      _ <- EitherT(usersRepository.registerUser(user))
+    yield user).value
 
   def login(userLogin: UserLogin): IO[Option[User]] =
     usersRepository
       .retrieveUser(userLogin.id)
-      .map:
-        case Some(user) =>
-          if PasswordUtils.checkPasswords(userLogin.password, user.passwordHash) then Some(user)
-          else None
-        case _ => None
+      .nested
+      .filter(user => PasswordUtils.checkPasswords(userLogin.password, user.passwordHash))
+      .value
 
 sealed trait RegistrationError derives Codec, Schema
 case class UserValidationError(registrationErrors: NonEmptyChain[RegistrationFormError]) extends RegistrationError

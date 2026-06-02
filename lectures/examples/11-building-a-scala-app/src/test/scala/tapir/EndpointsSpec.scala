@@ -36,7 +36,7 @@ class EndpointsSpec extends AsyncFlatSpec with Matchers with EitherValues with A
 
     // when
     val response = basicRequest
-      .get(uri"http://test.com/v1/books")
+      .get(uri"http://test.com/v1/books?number=1&limit=10")
       .response(asJson[List[BookSummary]])
       .send(backendStub)
 

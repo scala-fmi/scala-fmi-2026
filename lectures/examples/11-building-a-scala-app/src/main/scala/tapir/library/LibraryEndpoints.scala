@@ -53,7 +53,7 @@ EndpointIO:
 - Headers type: List[Header], method: headers
 
 EndpointInput:
-- FixedMethod, type: Unit
+- FixedMethod, type: Unit, get, post, ...
 - PathCapture, type: String -> T, method: path[T]
 - PathsCapture, type: List[String], method: paths
 - FixedPath, type: Unit, method: "string"
@@ -69,27 +69,40 @@ EndpointOutput:
 
  */
 
-//case class Page(number: Int, limit: Option[Int])
+case class Page(number: Int, limit: Option[Int])
+
+val pageInput =
+  query[Int]("number")
+    .validate(Validator.positive)
+    .and(query[Option[Int]]("limit"))
+    .mapTo[Page]
 
 object LibraryEndpoints:
   val baseEndpoint: PublicEndpoint[Unit, Unit, Unit, Any] = endpoint
   val v1BaseEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = baseEndpoint.in("v1")
 
-  val booksRootEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = v1BaseEndpoint.in("books")
+  val booksRootEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = v1BaseEndpoint.in("books").tag("Books")
 
-  val retrieveBooksEndpoint: Endpoint[Unit, Unit, Unit, List[BookSummary], Any] =
+  val retrieveBooksEndpoint: Endpoint[Unit, Page, Unit, List[BookSummary], Any] =
     booksRootEndpoint
-      .out(jsonBody[List[BookSummary]])
+      .in(pageInput)
+      .out(
+        jsonBody[List[BookSummary]]
+          .description("List of all books")
+          .example(List(BookSummary(BookId("1"), "Programming in Scala"), BookSummary(BookId("2"), "1984")))
+      )
       .get
 
   val retrieveBookEndpoint: Endpoint[Unit, BookId, String, Book, Any] =
     booksRootEndpoint
-      .in(path[BookId].name("book-id"))
+      .in("boook" / path[BookId].name("book-id"))
       .out(jsonBody[Book])
       .errorOut(statusCode(NotFound).and(jsonBody[String]))
       .get
+      .summary("Retrieving all books")
+      .description("fdskljfdksajfkldsjlfk")
 
-  val authorsRootEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = v1BaseEndpoint.in("authors")
+  val authorsRootEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = v1BaseEndpoint.in("authors").tag("Authors")
 
   val retrieveAuthorsEndpoint: Endpoint[Unit, Unit, Unit, List[Author], Any] =
     authorsRootEndpoint

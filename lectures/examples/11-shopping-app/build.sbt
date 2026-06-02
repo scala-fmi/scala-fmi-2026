@@ -9,44 +9,56 @@ scalacOptions ++= Seq(
   "-deprecation"
 )
 
+val catsVersion = "2.13.0"
+val catsEffectVersion = "3.7.0"
+
+val http4sVersion = "0.23.34"
+val tapirVersion = "1.13.19"
+
+val circeVersion = "0.14.15"
+
+val flywayVersion = "12.7.0"
+val doobieVersion = "1.0.0-RC12"
+
 libraryDependencies ++= Seq(
-  "org.typelevel" %% "cats-core" % "2.12.0",
-  "org.typelevel" %% "cats-effect" % "3.5.4",
+  "org.typelevel" %% "cats-core" % catsVersion,
+  "org.typelevel" %% "cats-effect" % catsEffectVersion,
 
-  "org.http4s" %% "http4s-dsl" % "0.23.26",
-  "org.http4s" %% "http4s-ember-server" % "0.23.26",
-  "org.http4s" %% "http4s-circe" % "0.23.26",
+  "org.http4s" %% "http4s-dsl" % http4sVersion,
+  "org.http4s" %% "http4s-ember-server" % http4sVersion,
+  "org.http4s" %% "http4s-circe" % http4sVersion,
 
-  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-http4s-client" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % "1.11.25",
-  "com.softwaremill.sttp.tapir" %% "tapir-cats" % "1.11.25",
+  "com.softwaremill.sttp.tapir" %% "tapir-http4s-server" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-http4s-client" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-sttp-client" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-prometheus-metrics" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-swagger-ui-bundle" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-json-circe" % tapirVersion,
+  "com.softwaremill.sttp.tapir" %% "tapir-cats" % tapirVersion,
 
-  "org.flywaydb" % "flyway-core" % "8.5.12",
+  "io.circe" %% "circe-core" % circeVersion,
+  "io.circe" %% "circe-generic" % circeVersion,
 
-  "org.tpolecat" %% "doobie-core" % "1.0.0-RC9",
-  "org.tpolecat" %% "doobie-hikari" % "1.0.0-RC9",
-  "org.tpolecat" %% "doobie-postgres" % "1.0.0-RC9",
+  "org.flywaydb" % "flyway-core" % flywayVersion,
+  "org.flywaydb" % "flyway-database-postgresql" % flywayVersion,
 
-  "com.typesafe" % "config" % "1.4.3",
+  "org.tpolecat" %% "doobie-core" % doobieVersion,
+  "org.tpolecat" %% "doobie-hikari" % doobieVersion,
+  "org.tpolecat" %% "doobie-postgres" % doobieVersion,
 
-  "io.circe" %% "circe-core" % "0.14.13",
-  "io.circe" %% "circe-generic" % "0.14.13",
+  "com.typesafe" % "config" % "1.4.8",
 
   "org.mindrot" % "jbcrypt" % "0.4",
 
-  ("org.reactormonk" %% "cryptobits" % "1.3").cross(CrossVersion.for3Use2_13),
+  "com.github.jwt-scala" %% "jwt-circe" % "11.0.4",
 
-  "ch.qos.logback" % "logback-classic" % "1.5.6",
-  "org.fusesource.jansi" % "jansi" % "1.18",
+  "ch.qos.logback" % "logback-classic" % "1.5.33",
+  "org.fusesource.jansi" % "jansi" % "2.4.3",
 
-  "org.scalatest" %% "scalatest" % "3.2.12" % Test,
-  "org.typelevel" %% "cats-laws" % "2.12.0" % Test,
+  "org.scalatest" %% "scalatest" % "3.2.20" % Test,
+  "org.typelevel" %% "cats-laws" % catsVersion % Test,
   "org.typelevel" %% "discipline-scalatest" % "2.3.0" % Test,
-  "org.typelevel" %% "cats-effect-testing-scalatest" % "1.5.0" % Test
+  "org.typelevel" %% "cats-effect-testing-scalatest" % "1.8.0" % Test
 )
 
 fork := true

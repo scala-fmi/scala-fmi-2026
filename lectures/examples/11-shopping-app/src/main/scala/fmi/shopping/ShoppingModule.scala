@@ -19,8 +19,8 @@ object ShoppingModule:
     authenticationService: AuthenticationService,
     productStockRepository: ProductStockRepository
   ): Resource[IO, ShoppingModule] =
-    val orderDao = new OrderRepository(dbTransactor)
-    val orderService = new OrderService(dbTransactor)(productStockRepository, orderDao)
+    val orderDao = new OrderRepository(dbTransactor)(productStockRepository)
+    val orderService = new OrderService(orderDao)
     val shippingController = new ShoppingController(orderService)(authenticationService)
 
     Resource.pure(

@@ -2,7 +2,7 @@ package fmi.shopping
 
 import cats.effect.IO
 import doobie.Meta
-import fmi.inventory.{ProductId, ProductStockAdjustment}
+import fmi.inventory.{InventoryAdjustment, ProductId, ProductStockAdjustment}
 import fmi.user.UserId
 import io.circe.Codec
 import sttp.tapir.{Schema, SchemaType}
@@ -11,7 +11,9 @@ import java.time.Instant
 
 case class Order(orderId: OrderId, user: UserId, orderLines: List[OrderLine], placingTimestamp: Instant)
     derives Codec,
-      Schema
+      Schema:
+  def toInventoryAdjustment: InventoryAdjustment =
+    InventoryAdjustment(orderLines.map(_.toProductStockAdjustment))
 
 opaque type OrderId = String
 

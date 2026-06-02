@@ -1,34 +1,18 @@
 package fmi.shopping
 
 import cats.effect.IO
-import cats.syntax.all.*
-import doobie.implicits.*
-import fmi.infrastructure.db.DoobieDatabase.DbTransactor
-import fmi.inventory.{InventoryAdjustment, NotEnoughStockAvailable, NotEnoughStockAvailableException, ProductStockRepository}
+import fmi.inventory.NotEnoughStockAvailable
 import fmi.user.UserId
 
-class OrderService(dbTransactor: DbTransactor)(productStockRepository: ProductStockRepository, orderRepository: OrderRepository):
+class OrderService(
+  orderRepository: OrderRepository
+):
   // TODO: validate shopping cart has positive quantities
-  def placeOrder(user: UserId, shoppingCart: ShoppingCart): IO[Either[NotEnoughStockAvailable.type, Order]] = for
+  def placeOrder(user: UserId, shoppingCart: ShoppingCart): IO[Either[NotEnoughStockAvailable, Order]] = for
     orderId <- OrderId.generate
     placingTimestamp <- IO.realTimeInstant
 
     order = Order(orderId, user, shoppingCart.orderLines, placingTimestamp)
 
-    maybeOrder <- transactOrder(shoppingCart.toInventoryAdjustment, order)
+    maybeOrder <- orderRepository.placeOrder(order)
   yield maybeOrder
-
-  private def transactOrder(
-    inventoryAdjustment: InventoryAdjustment,
-    order: Order
-  ): IO[Either[NotEnoughStockAvailable.type, Order]] =
-    val transaction =
-      productStockRepository.applyInventoryAdjustmentAction(inventoryAdjustment) *>
-        orderRepository.placeOrder(order)
-
-    transaction
-      .transact(dbTransactor)
-      .map(_.asRight[NotEnoughStockAvailable.type])
-      .recover { case NotEnoughStockAvailableException =>
-        NotEnoughStockAvailable.asLeft
-      }

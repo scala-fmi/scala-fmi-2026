@@ -2,7 +2,7 @@ package fmi.user
 
 import cats.effect.IO
 import cats.syntax.all.*
-import fmi.UnauthorizedAccess
+import fmi.http.UnauthorizedAccess
 import fmi.user.authentication.AuthenticationService
 import sttp.tapir.server.ServerEndpoint
 
@@ -15,7 +15,7 @@ class UsersController(
 
   def registerUser = UsersEndpoints.registerUserEndpoint.serverLogic: userRegistrationForm =>
     usersService.registerUser(userRegistrationForm).map(_.void)
-
+  
   def getAuthenticatedUser = UsersEndpoints.getAuthenticatedUserEndpoint.authenticate
     .serverLogicSuccess(user => _ => user.pure[IO])
 

@@ -5,8 +5,7 @@ import cats.syntax.all.*
 import tapir.library.{BookSummary, Library, LibraryEndpoints}
 
 class LibraryController(library: Library):
-
-  val retrieveBooks = LibraryEndpoints.retrieveBooksEndpoint.serverLogicSuccess: _ =>
+  val retrieveBooks = LibraryEndpoints.retrieveBooksEndpoint.serverLogicSuccess: page =>
     library.allBooks.nested.map(BookSummary.apply).value
 
   val retrieveBook = LibraryEndpoints.retrieveBookEndpoint.serverLogic: bookId =>

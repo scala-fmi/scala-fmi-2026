@@ -6,6 +6,7 @@ import doobie.*
 import doobie.implicits.*
 import fmi.infrastructure.db.DoobieDatabase.DbTransactor
 import fmi.utils.DerivationConfiguration.given
+import io.circe.Codec
 import io.circe.derivation.ConfiguredCodec
 import sttp.tapir.Schema
 
@@ -33,16 +34,15 @@ class ProductStockRepository(dbTransactor: DbTransactor):
   def applyInventoryAdjustment(inventoryAdjustment: InventoryAdjustment): IO[AdjustmentResult] =
     applyInventoryAdjustmentAction(inventoryAdjustment)
       .transact(dbTransactor)
-      .as(SuccessfulAdjustment: AdjustmentResult)
-      .recover { case NotEnoughStockAvailableException =>
-        NotEnoughStockAvailable
-      }
+      .as(SuccessfulAdjustment)
+      .recover:
+        case NotEnoughStockAvailableException(product) => NotEnoughStockAvailable(product)
 
   def applyInventoryAdjustmentAction(inventoryAdjustment: InventoryAdjustment): ConnectionIO[Unit] =
     // TODO: Replace by a single query
     inventoryAdjustment.adjustments
       // Sorting allows us to avoid deadlock
-      .sortBy(_.product.asString)
+      .sortBy(_.product)
       .map(adjustStockForProduct)
       .sequence
       .void
@@ -64,10 +64,13 @@ class ProductStockRepository(dbTransactor: DbTransactor):
 
     query.update.run
       .map(updatedRows => updatedRows == 1)
-      .ifM[Unit](().pure[ConnectionIO], NotEnoughStockAvailableException.raiseError[ConnectionIO, Unit])
+      .ifM[Unit](
+        ().pure,
+        NotEnoughStockAvailableException(adjustment.product).raiseError
+      )
 
-case object NotEnoughStockAvailableException extends Exception
+case class NotEnoughStockAvailableException(product: ProductId) extends Exception
 
-sealed trait AdjustmentResult derives ConfiguredCodec, Schema
+sealed trait AdjustmentResult derives Codec, Schema
 case object SuccessfulAdjustment extends AdjustmentResult
-case object NotEnoughStockAvailable extends AdjustmentResult
+case class NotEnoughStockAvailable(product: ProductId) extends AdjustmentResult derives Codec.AsObject, Schema
