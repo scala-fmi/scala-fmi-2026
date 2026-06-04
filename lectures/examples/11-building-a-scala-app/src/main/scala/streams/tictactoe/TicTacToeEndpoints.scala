@@ -3,7 +3,6 @@ package streams.tictactoe
 import cats.effect.IO
 import io.circe.Codec
 import streams.tictactoe.CirceConfiguration.given
-import sttp.capabilities
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.tapir.*
 import sttp.tapir.Codec.textWebSocketFrame

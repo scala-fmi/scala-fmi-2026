@@ -1,11 +1,9 @@
 package streams.tictactoe
 
-import io.circe.{Codec, Decoder, Encoder}
 import io.circe.derivation.ConfiguredEnumCodec
+import io.circe.{Codec, Decoder, Encoder}
 import streams.tictactoe.CirceConfiguration.given
 import sttp.tapir.{Schema, Validator}
-import cats.syntax.all.*
-import streams.tictactoe.Player.X
 
 enum Player derives Schema, ConfiguredEnumCodec:
   case X, O

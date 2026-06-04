@@ -39,13 +39,13 @@ object TicTacToeConsole:
       Cell.applyOption(x, y).toRight(left = "Coordinates out of range")
     case input => Left(s"$input is invalid. You should enter coordinates in format 'x, y'")
 
-  def enterMove(ticTacToe: TicTacToe): IO[Move] =
+  def enterMove(currentPlayer: Player): IO[Move] =
     for
       _ <- IO.println("Enter cell:")
       cellString <- IO.readLine
       result <- parseCell(cellString) match
-        case Right(cell) => Move(ticTacToe.currentPlayer, cell).pure[IO]
-        case Left(error) => IO.println(error) >> enterMove(ticTacToe)
+        case Right(cell) => Move(currentPlayer, cell).pure[IO]
+        case Left(error) => IO.println(error) >> enterMove(currentPlayer)
     yield result
 
   def ticTacToeMoveErrorDescription(error: TicTacToeMoveError): String = error match
@@ -55,6 +55,13 @@ object TicTacToeConsole:
       s"It's not $attemptedToMove's turn. Current player is $currentPlayer'"
     case TicTacToeMoveError.GameFinished =>
       s"Cannot play more moves. Game is already finished"
+
+  def actOnBoard(gamePlayer: Player, board: TicTacToe): IO[Option[Move]] =
+    (board.outcome, board.currentPlayer) match
+      case (Some(outcome), _) =>
+        TicTacToeConsole.printOutcome(outcome) >> None.pure
+      case (None, gamePlayer) => TicTacToeConsole.enterMove(gamePlayer).map(Option.apply)
+      case _ => None.pure
 
   def printOutcome(outcome: TicTacToeOutcome): IO[Unit] =
     outcome match
@@ -68,7 +75,7 @@ object TicTacToeApp extends IOApp.Simple:
   def makeAMove(ticTacToe: TicTacToe): IO[TicTacToe] =
     for
       _ <- IO.println(s"Current player: ${ticTacToe.currentPlayer}. Please make a move")
-      move <- enterMove(ticTacToe)
+      move <- enterMove(ticTacToe.currentPlayer)
       result <- ticTacToe.makeMove(move) match
         case Right(updatedTicTacToe) => updatedTicTacToe.pure[IO]
         case Left(error) =>

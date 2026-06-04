@@ -2,6 +2,7 @@ package streams
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
+import streams.util.{HttpClient, HttpServiceUrls}
 
 import scala.concurrent.duration.*
 
@@ -23,8 +24,14 @@ def Fs201BasicExample =
 
   println(repeat(s3).take(10).toList)
 
-  val effectfulStream = repeat(Stream.eval(IO.println("Hellou!!!") >> IO.sleep(1.second)))
-//  println(effectfulStream.compile.drain.unsafeRunSync())
+  val effectfulStream = repeat(Stream.eval(IO.println("Hellou!!!")))
+  println(effectfulStream.take(10).compile.drain.unsafeRunSync())
 
   val effectfulStream2 = Stream.evalSeq(IO(List(1, 2, 3)))
   println(effectfulStream2.compile.fold(0)(_ + _).unsafeRunSync())
+
+  val effectfulStream3 = repeat(Stream.eval(IO.sleep(1.second) *> randomNumberFromAPI)).map(_.trim.toInt)
+  println(effectfulStream3.foreach(IO.println).compile.drain.unsafeRunSync())
+
+def randomNumberFromAPI: IO[String] =
+  HttpClient.getIO(HttpServiceUrls.randomNumberUpTo(256)).map(_.getResponseBody)

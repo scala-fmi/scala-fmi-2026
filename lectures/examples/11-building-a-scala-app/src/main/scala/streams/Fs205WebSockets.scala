@@ -13,7 +13,8 @@ import sttp.capabilities.WebSockets
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.tapir.*
 import sttp.tapir.server.ServerEndpoint
-import sttp.tapir.server.http4s.{Http4sServerInterpreter, serverSentEventsBody}
+import sttp.tapir.server.http4s.Http4sServerInterpreter
+
 import scala.concurrent.duration.*
 
 object Fs205WebSocket extends IOApp.Simple:

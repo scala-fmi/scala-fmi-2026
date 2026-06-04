@@ -44,6 +44,8 @@ libraryDependencies ++= Seq(
   "com.softwaremill.sttp.client4" %% "fs2" % "4.0.23",
   "com.softwaremill.sttp.client4" %% "circe" % "4.0.24" % Test,
 
+  "org.asynchttpclient" % "async-http-client" % "3.0.10",
+
   "ch.qos.logback" % "logback-classic" % "1.5.6",
   "org.fusesource.jansi" % "jansi" % "1.18",
 
