@@ -1,6 +1,5 @@
 package effects.cats
 
-import cats.Applicative
 import cats.data.ValidatedNec
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
@@ -78,7 +77,7 @@ import effects.cats.user.{RegistrationForm, RegistrationFormError, User}
   println(maxItem)
 
   def doubleInteger(n: Int): IO[Int] =
-    Applicative[IO].whenA(n == Int.MaxValue)(IO.println("Integer will overflow!!!"))
+    IO.println("Integer will overflow!!!").whenA(n < (Int.MinValue / 2) || (Int.MaxValue / 2) < n)
       *> IO(n * 2)
 
   println:

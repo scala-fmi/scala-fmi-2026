@@ -1,10 +1,11 @@
 package streams
 
+import cats.effect.unsafe.IORuntime
 import cats.effect.{IO, IOApp, Resource}
 import cats.syntax.all.*
 import com.comcast.ip4s.{ipv4, port}
-import fs2.concurrent.Topic
-import fs2.{Pipe, text}
+import fs2.concurrent.{Channel, Topic}
+import fs2.{Pipe, Stream, text}
 import io.circe.Codec
 import org.http4s.ember.server.EmberServerBuilder
 import sttp.capabilities.fs2.Fs2Streams
@@ -15,6 +16,8 @@ import sttp.tapir.client.sttp4.ws.WebSocketSttpClientInterpreter
 import sttp.tapir.client.sttp4.ws.fs2.*
 import sttp.tapir.json.circe.*
 import sttp.tapir.server.http4s.Http4sServerInterpreter
+
+import scala.concurrent.duration.DurationInt
 
 case class Message(fromUser: String, content: String) derives Schema, Codec
 
@@ -93,3 +96,14 @@ object Fs207ChatClient extends IOApp.Simple:
     chatClientApp
       .use(app => app.chatClientAppLogic)
       .guarantee(IO.println("Thank you for chatting with us :)!"))
+
+@main
+def testChannel =
+  Channel
+    .unbounded[IO, String]
+    .flatMap: channel =>
+      val pub1 = Stream.repeatEval(IO("Hello")).evalMap(channel.send).metered(1.second)
+      val pub2 = Stream.repeatEval(IO("World")).evalMap(channel.send).metered(2.seconds)
+      val sub = channel.stream.evalMap(IO.println)
+      Stream(pub1, pub2, sub).parJoinUnbounded.interruptAfter(6.seconds).compile.drain
+    .unsafeRunSync()(using IORuntime.global)

@@ -1,6 +1,5 @@
 package effects.cats
 
-import cats.Apply
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import cats.implicits.catsSyntaxTuple2Semigroupal
@@ -49,7 +48,7 @@ import scala.concurrent.duration.DurationInt
   def doSomething: IO[Int] = IO.sleep(2.seconds) *> 42.pure
 
   import cats.~>
-  
+
   println:
     (doSomething, doSomething).tupled.timed.unsafeRunSync()
 

@@ -60,7 +60,7 @@ object TicTacToeConsole:
     (board.outcome, board.currentPlayer) match
       case (Some(outcome), _) =>
         TicTacToeConsole.printOutcome(outcome) >> None.pure
-      case (None, gamePlayer) => TicTacToeConsole.enterMove(gamePlayer).map(Option.apply)
+      case (None, `gamePlayer`) => TicTacToeConsole.enterMove(gamePlayer).map(Option.apply)
       case _ => None.pure
 
   def printOutcome(outcome: TicTacToeOutcome): IO[Unit] =

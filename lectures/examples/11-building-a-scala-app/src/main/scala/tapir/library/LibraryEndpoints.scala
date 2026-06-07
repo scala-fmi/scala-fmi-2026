@@ -95,12 +95,12 @@ object LibraryEndpoints:
 
   val retrieveBookEndpoint: Endpoint[Unit, BookId, String, Book, Any] =
     booksRootEndpoint
-      .in("boook" / path[BookId].name("book-id"))
+      .in(path[BookId].name("book-id"))
       .out(jsonBody[Book])
       .errorOut(statusCode(NotFound).and(jsonBody[String]))
       .get
       .summary("Retrieving all books")
-      .description("fdskljfdksajfkldsjlfk")
+      .description("Endpoint Description")
 
   val authorsRootEndpoint: Endpoint[Unit, Unit, Unit, Unit, Any] = v1BaseEndpoint.in("authors").tag("Authors")
 

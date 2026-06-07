@@ -110,6 +110,6 @@ object CustomErrorsEndpoints:
       )
 
   import cats.syntax.all.*
-  
-  peopleListing.serverLogicPure: _ => 
+
+  peopleListing.serverLogicPure: _ =>
     CustomError2("a", "b").asLeft

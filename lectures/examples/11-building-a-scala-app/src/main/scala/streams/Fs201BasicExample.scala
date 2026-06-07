@@ -24,8 +24,8 @@ def Fs201BasicExample =
 
   println(repeat(s3).take(10).toList)
 
-  val effectfulStream = repeat(Stream.eval(IO.println("Hellou!!!")))
-  println(effectfulStream.take(10).compile.drain.unsafeRunSync())
+  val effectfulStream = repeat(Stream.eval(IO.sleep(1.second) *> IO.println("Hellou!!!")))
+  effectfulStream.take(10).compile.drain.unsafeRunSync()
 
   val effectfulStream2 = Stream.evalSeq(IO(List(1, 2, 3)))
   println(effectfulStream2.compile.fold(0)(_ + _).unsafeRunSync())

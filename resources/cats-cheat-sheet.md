@@ -29,7 +29,7 @@ extension [F[_], G[_], A](value: F[G[A]])
 
 Монадите не се композират в общия случай, но са композитни, ако съществува `Traverse` за вътрешния тип. Поради тази причина в Cats имаме няколко типа за комопозиране на `Traverse` монади с други – `OptionT` и `EitherT`.
 
-[Примери с композиция](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex8Composition.scala)
+[Примери с композиция](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex8Composition.scala)
 
 ### `Option[A]`
 
@@ -65,7 +65,7 @@ extension [A](a: Option[A])
   def toOptionT[F[_]: Applicative]: OptionT[F, A] // Композира option-а с друг ефект
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex1DataTypesSyntax.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex1DataTypesSyntax.scala)
 
 ### `Either[E, A]`
 
@@ -94,7 +94,7 @@ extension [E, A](either: Either[E, A])
   // ...и други
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex1DataTypesSyntax.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex1DataTypesSyntax.scala)
 
 ### `Validated[E, A]`
 
@@ -115,7 +115,7 @@ extension [A](a: A):
   def invalidNec[B]: ValidatedNec[A, B]
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex1DataTypesSyntax.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex1DataTypesSyntax.scala)
 
 ### `FunctionK` или `~>`
 
@@ -151,7 +151,7 @@ extension [A : Eq](x: A)
   def =!=(rhs: A): Boolean
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex2EqDemo.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex2EqDemo.scala)
 
 ### Semigroup и Monoid
 
@@ -176,7 +176,7 @@ extension [A : Monoid](x: A)
   def isEmpty(implicit eq: Eq[A]): Boolean // проверява дали стойността е идентитета. Изисква Eq за сравнение
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex3MonoidDemo.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex3MonoidDemo.scala)
 
 ### `Foldable[F[_]]`
 
@@ -219,7 +219,7 @@ extension [F[_] : Foldable, A](fa: F[A])
   // и други операции, характерни за foldable типове
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex4FoldableDemo.scala)
+[Примери](../lectures/examples/09-type-classes/src/main/scala/cats/Ex4FoldableDemo.scala)
 
 ### `Functor[F[_]]`
 
@@ -248,7 +248,7 @@ extension [F[_] : Functor, A, B](fab: F[(A, B)])
   def unzip: (F[A], F[B]) // изважда tuple-а отвън
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex5FunctorDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex5FunctorDemo.scala)
 
 ### `Apply[F[_]]`
 
@@ -289,7 +289,7 @@ extension [F[_] : Apply, A, B, C](t3: (F[A], F[B], F[C]))
 // ... имплементации за tuple от 1 до 22
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex6ApplyApplicativeTraverseDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex6ApplyApplicativeTraverseDemo.scala)
 
 ### `Applicative[F[_]]`
 
@@ -314,9 +314,11 @@ extension [A](a: A)
 
 extension [F[_] : Applicative, A](fa: F[A]):
   def replicateA(n: Int): F[List[A]] // повтаря fa n пъти
+  def unlessA(cond: Boolean)(implicit F: Applicative[F]): F[Unit] // Оценява се до ефекта, само ако условието не е вярно. Иначе се оценява до F[Unit] 
+  def whenA(cond: Boolean)(implicit F: Applicative[F]): F[Unit] // Оценява се до ефекта, само ако условието е вярно. Иначе се оценява до F[Unit]
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex6ApplyApplicativeTraverseDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex6ApplyApplicativeTraverseDemo.scala)
 
 ### `Traverse[F[_]]`
 
@@ -347,7 +349,7 @@ extension [F[_] : Traverse, A](fa: F[A])
   def zipWithIndex: F[(A, Int)] // преобразуване на стойностите към tuple с индекса
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex6ApplyApplicativeTraverseDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex6ApplyApplicativeTraverseDemo.scala)
 
 ### `FlatMap[F[_]]`
 
@@ -382,7 +384,7 @@ extension [F[_] : FlatMap, A](fOptA: F[Option[A]])
   def untilDefinedM: F[A] // повтаря fOptA докато не получи стойност. Полезно е при polling операции
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
 
 ### `Monad[F[_]]`
 
@@ -403,7 +405,7 @@ extensino [F[_]: Monad, A](fa: F[A])
   def iterateUntil(p: A => Boolean): F[A] // повтаря fa докато p не даде истина за стойността във fa
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
 
 ### `ApplicativeError[F[_], E]`
 
@@ -448,7 +450,7 @@ extension [F[_], E, A](fa: F[A])
   def orRaise(other: => E)(implicit F: ApplicativeError[F, E]): F[A] // при грешка заменя грешката с other
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
 
 ### `MonadError[F[_], E]`
 
@@ -479,7 +481,7 @@ extension [F[_], E, A](fa: F[A])
   def ensureOr(error: A => E)(predicate: A => Boolean)(implicit F: MonadError[F, E]): F[A] // Проверява дали стойността във fa изпълнява определено условив. Ако не, то я трансформира към грешка в ефекта F
 ```
 
-[Примери](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
+[Примери](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex7FlatMapMonadMonadErrorDemo.scala)
 
 ### `Parallel`
 
@@ -520,6 +522,6 @@ extension[F[_] : Parallel, A, B, C](t3: (F[A], F[B], F[C]))
 // ... имплементации за tuple от 1 до 22
 ```
 
-[Примери 1](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex8Composition.scala)
+[Примери 1](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex9ParallelDemo.scala)
 
-[Примери 2](../lectures/examples/11-cats-and-cats-effects/src/main/scala/cats/Ex9ParallelDemo.scala)
+[Примери 2](../lectures/examples/10-monads-and-applicatives/src/main/scala/effects/cats/Ex10ConcurrentParallelDemo.scala)
